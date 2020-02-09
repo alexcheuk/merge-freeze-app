@@ -9,7 +9,7 @@ module.exports = app => {
   slackEvents.on('member_joined_channel', async (event) => {
     const userInfo = await getBotInfo(event.user)
     console.log(userInfo)
-    if (userInfo.user.name === 'freeze_merge' && userInfo.user.is_bot) {
+    if (userInfo.user.name === 'merge_freeze' && userInfo.user.is_bot) {
       console.log('post welcome message')
       slackapi.chat.postMessage({
         blocks: [
