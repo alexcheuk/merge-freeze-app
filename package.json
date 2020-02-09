@@ -38,6 +38,7 @@
     "@octokit/app": "^4.1.0",
     "@octokit/auth-app": "^2.4.2",
     "@octokit/rest": "^16.28.9",
+    "@slack/events-api": "^2.3.1",
     "@slack/interactive-messages": "^1.4.1",
     "@slack/web-api": "^5.7.0",
     "axios": "^0.19.2",

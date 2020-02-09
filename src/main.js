@@ -9,6 +9,7 @@ const app = express()
 app.use(morgan('tiny'))
 
 require('./slack/interactives')(app)
+require('./slack/events')(app)
 
 app.use(express.json())
 

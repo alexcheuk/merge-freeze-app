@@ -129,4 +129,10 @@ const openConfirmationDialog = async (triggerId, reason) => {
   }).catch(res => console.log(res))
 }
 
-export { generateMergeFreezeReply, generateMergeUnfreezeReply, generateMergeUnfreezePRReply, openConfirmationDialog }
+const getBotInfo = async (botID) => {
+  return slackapi.users.info({
+    user: botID
+  })
+}
+
+export { generateMergeFreezeReply, generateMergeUnfreezeReply, generateMergeUnfreezePRReply, openConfirmationDialog, getBotInfo, slackapi }
