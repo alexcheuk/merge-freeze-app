@@ -26,11 +26,11 @@ export const verifySignature = (req, res, next) => {
 }
 
 export const isAllowedChannel = (req, res, next) => {
-  const allowedChannel = process.env.ALLOWED_CHANNEL
+  const allowedChannel = process.env.ALLOWED_CHANNELS
 
   if (!allowedChannel) return next()
 
-  if (req.body.channel_name !== allowedChannel.toLowerCase()) return res.send('Not allowed in this channel')
+  if (allowedChannel.split(',').map(ch => ch.toLowerCase()).find(req.body.channel_name)) return res.send('Not allowed in this channel')
 
   next()
 }
