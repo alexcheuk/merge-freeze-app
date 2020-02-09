@@ -64,15 +64,25 @@ const mergeFreeze = async (owner, repo, name, reason) => {
       check_name: 'merge-freeze'
     })
 
-    checkRuns.forEach(async (check) => {
+    if (checkRuns && checkRuns.length) {
+      checkRuns.forEach(async (check) => {
+        await client.checks.update({
+          check_run_id: check.id,
+          owner,
+          repo,
+          name: 'merge-freeze',
+          ...generateMergeFreezeStatus(name, reason)
+        })
+      })
+    } else {
       await client.checks.update({
-        check_run_id: check.id,
         owner,
         repo,
         name: 'merge-freeze',
+        head_sha: pr.head.sha,
         ...generateMergeFreezeStatus(name, reason)
       })
-    })
+    }
   })
 
   return {
