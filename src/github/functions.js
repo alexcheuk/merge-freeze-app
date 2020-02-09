@@ -75,7 +75,7 @@ const mergeFreeze = async (owner, repo, name, reason) => {
         })
       })
     } else {
-      await client.checks.update({
+      await client.checks.create({
         owner,
         repo,
         name: 'merge-freeze',
