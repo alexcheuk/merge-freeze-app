@@ -8,8 +8,9 @@ module.exports = app => {
 
   slackEvents.on('member_joined_channel', async (event) => {
     const userInfo = await getBotInfo(event.user)
-
+    console.log(userInfo)
     if (userInfo.user.name === 'freeze_merge' && userInfo.user.is_bot) {
+      console.log('post welcome message')
       slackapi.chat.postMessage({
         blocks: [
           {
@@ -42,7 +43,7 @@ There are 3 commands available to this channel:
           }
         ],
         channel: event.channel
-      })
+      }).then(res => console.log(res))
     }
   })
 }
