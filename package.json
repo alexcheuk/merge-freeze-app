@@ -1,0 +1,55 @@
+{
+  "name": "merge-freeze-github-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/main.js",
+  "babel-node": "babel-node",
+  "scripts": {
+    "babel-node": "babel-node",
+    "build": "babel src --out-dir dist --source-maps inline",
+    "prepublishOnly": "npm run build",
+    "start": "nodemon --exec babel-node src/main.js",
+    "start-prod": "npm run build && node dist/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexcheuk/merge-freeze-github-app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alexcheuk/merge-freeze-github-app/issues"
+  },
+  "homepage": "https://github.com/alexcheuk/merge-freeze-github-app#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.4",
+    "@babel/node": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-babel": "^5.3.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-standard": "^4.0.1"
+  },
+  "dependencies": {
+    "@octokit/app": "^4.1.0",
+    "@octokit/auth-app": "^2.4.2",
+    "@octokit/rest": "^16.28.9",
+    "@slack/interactive-messages": "^1.4.1",
+    "@slack/web-api": "^5.7.0",
+    "axios": "^0.19.2",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.1.0",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "express": "^4.17.1",
+    "mongodb": "^3.5.2",
+    "mongoose": "^5.8.11",
+    "morgan": "^1.9.1",
+    "node-fetch": "^2.6.0",
+    "qs": "^6.9.1"
+  }
+}
