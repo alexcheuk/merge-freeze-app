@@ -38,9 +38,10 @@ const getInstallationAccessToken = async (owner, repo) => {
     }
   )
 
-  const installationId = (await result.json()).id
+  const resJson = (await result.json())
+  const installationId = resJson.id
 
-  console.log('Got Installation ID', installationId, result.json())
+  console.log('Got Installation ID', installationId, resJson)
 
   // And acquire access token for that id
   const installationAccessToken = await getInstallationAccessTokenByInstallationId(
