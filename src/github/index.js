@@ -1,5 +1,5 @@
 import {
-  checkRun, onPullRequest
+  checkRun, onPullRequest, onCheckSuite
 } from './functions'
 
 import { verifyGithubPayload } from './middleware'
@@ -12,6 +12,10 @@ module.exports = (app) => {
     switch (req.headers['x-github-event']) {
       case 'check_run':
         checkRun(req.body)
+        break
+
+      case 'check_suite':
+        onCheckSuite(req.body)
         break
 
       case 'pull_request':

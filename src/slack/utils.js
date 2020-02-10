@@ -28,15 +28,6 @@ const generateMergeFreezeReply = ({ user_id, user_name, text }, numPRs) => {
             text: `*Requested By:* <@${user_id}>`
           }
         ]
-      },
-      {
-        type: 'context',
-        elements: [
-          {
-            type: 'mrkdwn',
-            text: `*# PRs:* ${numPRs}`
-          }
-        ]
       }
     ]
   }
@@ -65,15 +56,6 @@ const generateMergeUnfreezeReply = ({ user_id, user_name, text }, numPRs) => {
           {
             type: 'mrkdwn',
             text: `*Requested By:* <@${user_id}>`
-          }
-        ]
-      },
-      {
-        type: 'context',
-        elements: [
-          {
-            type: 'mrkdwn',
-            text: `*# PRs:* ${numPRs}`
           }
         ]
       }

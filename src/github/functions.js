@@ -13,7 +13,7 @@ const checkRun = async ({
   const { owner, repo } = splitRepositoryPath(repository.full_name)
   const client = await getInstallationClient(owner, repo)
 
-  if (action === 'created' || action === 'rerequested') {
+  if (action === 'rerequested') {
     const latestMergeStatus = await getLatestStatus(owner, repo)
     const isMergeFrozen = latestMergeStatus ? latestMergeStatus.isFrozen : false
 
@@ -25,6 +25,28 @@ const checkRun = async ({
     })
   } else if (action === 'requested_action' && requested_action && requested_action.identifier === 'unfreeze_pr') {
     mergeUnfreezeRunID(owner, repo, check_run.id, sender.login)
+  }
+}
+
+const onCheckSuite = async ({
+  action, repository, check_suite
+}) => {
+  const { owner, repo } = splitRepositoryPath(repository.full_name)
+  const client = await getInstallationClient(owner, repo)
+
+  if (action === 'requested' || action === 'rerequested') {
+    const latestMergeStatus = await getLatestStatus(owner, repo)
+    const isMergeFrozen = latestMergeStatus ? latestMergeStatus.isFrozen : false
+
+    check_suite.pull_requests.forEach(pullRequest => {
+      client.checks.create({
+        owner,
+        repo,
+        name: 'merge-freeze',
+        head_sha: pullRequest.head.sha,
+        ...(isMergeFrozen ? generateMergeFreezeStatus(latestMergeStatus.requester, latestMergeStatus.reason) : generateMergeUnfreezeStatus())
+      })
+    })
   }
 }
 
@@ -168,5 +190,6 @@ export {
   onPullRequest,
   mergeFreeze,
   mergeUnfreeze,
-  mergeUnfreezePR
+  mergeUnfreezePR,
+  onCheckSuite
 }
