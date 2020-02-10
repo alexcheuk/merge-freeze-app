@@ -6,6 +6,8 @@ import chalk from 'chalk'
 import expressStatusMonitor from 'express-status-monitor'
 import bodyParser from 'body-parser'
 import errorHandler from 'errorhandler'
+import passport from 'passport'
+import session from 'express-session'
 import path from 'path'
 import fs from 'fs'
 
@@ -38,8 +40,17 @@ fs.readdirSync(modelsPath)
  */
 app.set('host', process.env.host || '0.0.0.0')
 app.set('port', process.env.PORT || 3000)
+
+app.set('views', path.resolve(__dirname, 'app'))
+app.engine('html', require('ejs').renderFile)
+
 app.use(expressStatusMonitor())
 app.use(logger('dev'))
+
+/** Passport COnfig */
+app.use(session({ secret: 'anything', resave: false, saveUninitialized: true }))
+app.use(passport.initialize())
+app.use(passport.session())
 
 /**
  * Routes required before bodyParser middleware
@@ -54,6 +65,7 @@ app.use(bodyParser.urlencoded({
   extended: false
 }))
 
+require('./configs/passport')
 require('./configs/routes')(app)
 
 /**

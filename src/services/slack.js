@@ -1,9 +1,10 @@
 import { WebClient } from '@slack/web-api'
 
-const SlackAPI = new WebClient(process.env.SLACK_ACCESS_TOKEN)
+const SlackAPI = new WebClient()
 
-export const openConfirmationDialog = async (triggerId, reason) => {
+export const openConfirmationDialog = async (token, triggerId, reason) => {
   return SlackAPI.dialog.open({
+    token,
     trigger_id: triggerId,
     dialog: {
       callback_id: 'confirm_merge_freeze',
@@ -23,8 +24,34 @@ export const openConfirmationDialog = async (triggerId, reason) => {
   }).catch(res => console.log(res))
 }
 
-export const getBotInfo = async (botID) => {
-  return SlackAPI.users.info({
-    user: botID
-  })
+export const openUnfreezePRConfirmationDialog = async (token, triggerId, prId, repos) => {
+  return SlackAPI.dialog.open({
+    token,
+    trigger_id: triggerId,
+    dialog: {
+      callback_id: 'confirm_unfreeze_pr_id',
+      title: 'From which Repository?',
+      submit_label: 'Submit',
+      elements: [
+        {
+          type: 'select',
+          label: 'Repository',
+          name: 'repo',
+          value: repos[0].full_name,
+          placeholder: 'Repository',
+          options: repos.map(repo => ({
+            label: repo.full_name,
+            value: repo.full_name
+          }))
+        },
+        {
+          type: 'text',
+          label: 'PR Number',
+          name: 'prId',
+          value: prId,
+          placeholder: 'Pull Request #'
+        }
+      ]
+    }
+  }).catch(res => console.log(res))
 }

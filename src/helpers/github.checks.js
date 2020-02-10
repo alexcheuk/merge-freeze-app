@@ -28,3 +28,8 @@ export const generateMergeUnfreezeStatus = name => {
     }
   }
 }
+
+export const splitRepositoryPath = (repo) => ({
+  owner: repo.split('/')[0],
+  repo: repo.split('/')[1]
+})
