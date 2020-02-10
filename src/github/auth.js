@@ -68,9 +68,7 @@ const getInstallationClient = async (owner, repo) => {
   const installationAccessToken = await getInstallationAccessToken(owner, repo)
 
   return new Octokit({
-    auth () {
-      return `token ${installationAccessToken}`
-    }
+    auth: `token ${installationAccessToken}`
   })
 }
 
@@ -78,10 +76,9 @@ const getInstallationClientByInstallationId = async installationId => {
   const installationAccessToken = await getInstallationAccessTokenByInstallationId(
     installationId
   )
+
   return new Octokit({
-    auth () {
-      return `token ${installationAccessToken}`
-    }
+    auth: `token ${installationAccessToken}`
   })
 }
 
