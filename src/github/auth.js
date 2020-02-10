@@ -8,7 +8,6 @@ const app = new App({
   id: process.env.GITHUB_APP_IDENTIFIER,
   privateKey: process.env.PRIVATE_KEY
 })
-const jwt = app.getSignedJsonWebToken()
 
 const getInstallationAccessTokenByInstallationId = async installationId => {
   const installationAccessToken = await app.getInstallationAccessToken({
@@ -26,7 +25,7 @@ const getInstallationAccessTokenByInstallationId = async installationId => {
  * @param {string} repo A name of a repository with GitHub App installed. E.g. 'github-app-nodejs'
  */
 const getInstallationAccessToken = async (owner, repo) => {
-  console.log('Get Installation Access Token')
+  const jwt = app.getSignedJsonWebToken()
   // Firstly, get the id of the installation based on the repository
   const result = await fetch(
     `https://api.github.com/repos/${owner}/${repo}/installation`,
@@ -41,19 +40,17 @@ const getInstallationAccessToken = async (owner, repo) => {
   const resJson = (await result.json())
   const installationId = resJson.id
 
-  console.log('Got Installation ID', installationId, resJson)
-
   // And acquire access token for that id
   const installationAccessToken = await getInstallationAccessTokenByInstallationId(
     installationId
   )
 
-  console.log('Got Installation Access Token', installationAccessToken)
-
   return installationAccessToken
 }
 
 const getInstallations = async () => {
+  const jwt = app.getSignedJsonWebToken()
+
   const result = await fetch('https://api.github.com/app/installations', {
     headers: {
       authorization: `Bearer ${jwt}`,
