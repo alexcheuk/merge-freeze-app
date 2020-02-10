@@ -42,6 +42,7 @@ module.exports = (app) => {
 
       res.json(generateMergeUnfreezeReply(req.body, numPRs))
     } catch (e) {
+      console.log(e)
       res.send('Failed to unfreeze')
     }
   })

@@ -59,6 +59,7 @@ const getInstallations = async () => {
 }
 
 const getInstallationClient = async (owner, repo) => {
+  console.log('Get Installation Client', owner, repo)
   const installationAccessToken = await getInstallationAccessToken(owner, repo)
   return new Octokit({
     auth () {
