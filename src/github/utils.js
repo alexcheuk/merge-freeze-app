@@ -1,4 +1,4 @@
-const capitalize = (str) => str.charAt(0).toUpperCase() + str.substring(1)
+const capitalize = (str = '') => str.charAt(0).toUpperCase() + str.substring(1)
 
 const generateMergeFreezeStatus = (name, reason) => {
   return {

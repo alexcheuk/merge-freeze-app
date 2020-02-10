@@ -8,9 +8,10 @@ module.exports = app => {
 
   slackEvents.on('member_joined_channel', async (event) => {
     const userInfo = await getBotInfo(event.user)
-    console.log(userInfo)
+
+    // Check if member that join is our Bot
+    // If it is, that means it has been invited to a channel
     if (userInfo.user.name === 'merge_freeze' && userInfo.user.is_bot) {
-      console.log('post welcome message')
       slackapi.chat.postMessage({
         blocks: [
           {

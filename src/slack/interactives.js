@@ -9,32 +9,39 @@ module.exports = app => {
   app.use('/slack/actions', slackInteractions.requestListener())
 
   slackInteractions.action({ type: 'dialog_submission' }, async (payload, respond) => {
-    const { owner, repo } = await getGithubRepo()
+    console.log('Dialog Submission:', payload)
 
-    // Logs the contents of the action to the console
-    console.log('payload', payload)
+    try {
+      // Logs the contents of the action to the console
+      console.log('payload', payload)
 
-    const { numPRs } = await mergeFreeze(owner, repo, payload.user.name, payload.submission.reason)
+      const { owner, repo } = await getGithubRepo()
 
-    await setFrozen(
-      {
-        owner,
-        repo,
-        source: 'slack',
-        id: payload.user.id,
-        name: payload.user.name,
-        reason: payload.submission.reason
-      }
-    )
+      const { numPRs } = await mergeFreeze(owner, repo, payload.user.name, payload.submission.reason)
 
-    // Send an additional message to the whole channel
-    respond({
-      replace_original: true,
-      ...generateMergeFreezeReply({
-        user_id: payload.user.id,
-        user_name: payload.user.name,
-        text: payload.submission.reason
-      }, numPRs)
-    })
+      await setFrozen(
+        {
+          owner,
+          repo,
+          source: 'slack',
+          id: payload.user.id,
+          name: payload.user.name,
+          reason: payload.submission.reason
+        }
+      )
+
+      // Send an additional message to the whole channel
+      await respond({
+        replace_original: true,
+        ...generateMergeFreezeReply({
+          user_id: payload.user.id,
+          user_name: payload.user.name,
+          text: payload.submission.reason
+        }, numPRs)
+      })
+    } catch (e) {
+      console.log('Merge Freeze Failed')
+      console.log(e)
+    }
   })
 }
