@@ -15,7 +15,7 @@ const checkRun = async ({
 
   if (action === 'created' || action === 'rerequested') {
     const latestMergeStatus = await getLatestStatus(owner, repo)
-    const isMergeFrozen = latestMergeStatus.isFrozen
+    const isMergeFrozen = latestMergeStatus ? latestMergeStatus.isFrozen : false
 
     client.checks.update({
       owner,
@@ -34,7 +34,7 @@ const onPullRequest = async ({ action, repository, pull_request: pullRequest }) 
 
   if (action === 'opened' || action === 'reopened') {
     const latestMergeStatus = await getLatestStatus(owner, repo)
-    const isMergeFrozen = latestMergeStatus.isFrozen
+    const isMergeFrozen = latestMergeStatus ? latestMergeStatus.isFrozen : false
 
     client.checks.create({
       owner,
