@@ -13,10 +13,10 @@ const checkRun = async ({
   const { owner, repo } = splitRepositoryPath(repository.full_name)
   const client = await getInstallationClient(owner, repo)
 
-  const latestMergeStatus = await getLatestStatus()
-  const isMergeFrozen = latestMergeStatus.isFrozen
-
   if (action === 'created' || action === 'rerequested') {
+    const latestMergeStatus = await getLatestStatus(owner, repo)
+    const isMergeFrozen = latestMergeStatus.isFrozen
+
     client.checks.update({
       owner,
       repo,
@@ -32,10 +32,10 @@ const onPullRequest = async ({ action, repository, pull_request: pullRequest }) 
   const { owner, repo } = splitRepositoryPath(repository.full_name)
   const client = await getInstallationClient(owner, repo)
 
-  const latestMergeStatus = await getLatestStatus()
-  const isMergeFrozen = latestMergeStatus.isFrozen
-
   if (action === 'opened' || action === 'reopened') {
+    const latestMergeStatus = await getLatestStatus(owner, repo)
+    const isMergeFrozen = latestMergeStatus.isFrozen
+
     client.checks.create({
       owner,
       repo,
