@@ -26,6 +26,7 @@ const getInstallationAccessTokenByInstallationId = async installationId => {
  * @param {string} repo A name of a repository with GitHub App installed. E.g. 'github-app-nodejs'
  */
 const getInstallationAccessToken = async (owner, repo) => {
+  console.log('Get Installation Access Token')
   // Firstly, get the id of the installation based on the repository
   const result = await fetch(
     `https://api.github.com/repos/${owner}/${repo}/installation`,
@@ -39,10 +40,14 @@ const getInstallationAccessToken = async (owner, repo) => {
 
   const installationId = (await result.json()).id
 
+  console.log('Got Installation ID', installationId)
+
   // And acquire access token for that id
   const installationAccessToken = await getInstallationAccessTokenByInstallationId(
     installationId
   )
+
+  console.log('Got Installation Access Token', installationAccessToken)
 
   return installationAccessToken
 }
@@ -61,6 +66,7 @@ const getInstallations = async () => {
 const getInstallationClient = async (owner, repo) => {
   console.log('Get Installation Client', owner, repo)
   const installationAccessToken = await getInstallationAccessToken(owner, repo)
+
   return new Octokit({
     auth () {
       return `token ${installationAccessToken}`
