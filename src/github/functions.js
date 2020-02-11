@@ -54,7 +54,7 @@ const onPullRequest = async ({ action, repository, pull_request: pullRequest }) 
   const { owner, repo } = splitRepositoryPath(repository.full_name)
   const client = await getInstallationClient(owner, repo)
 
-  if (action === 'opened' || action === 'reopened') {
+  if (action === 'opened' || action === 'reopened' || action === 'synchronize') {
     const latestMergeStatus = await getLatestStatus(owner, repo)
     const isMergeFrozen = latestMergeStatus ? latestMergeStatus.isFrozen : false
 
