@@ -3,12 +3,13 @@ import { getInstallationClientByInstallationId } from '../services/github.auth'
 import { testConnection } from '../helpers/slack.messages'
 
 export const getAppManage = async (req, res) => {
+  console.log('Manage: ', req.user)
   try {
     const installation = await getInstallationByGithubUserId(req.user.id)
 
     const client = await getInstallationClientByInstallationId(installation.installationId)
 
-    const installedRepos = await (await client.apps.listRepos()).data.repositories
+    const installedRepos = await (await client.apps.listRepos()).data.repositories || []
 
     const slackIntegrated = await testConnection(installation.slackBotToken)
     // console.log(installedRepos)
