@@ -105,10 +105,10 @@ const onPullRequestEvent = async ({ action, repository, pull_request }) => {
   }
 }
 
-const onInstallation = async ({ action, installation }) => {
+const onInstallation = async ({ action, installation, sender }) => {
   if (action === 'created') {
-    await saveGithubInstallation(installation.target_id, installation.id)
+    await saveGithubInstallation(sender.id, installation.id)
   } else if (action === 'deleted') {
-    await deleteGithubInstallation(installation.target_id, installation.id)
+    await deleteGithubInstallation(sender.id, installation.id)
   }
 }
