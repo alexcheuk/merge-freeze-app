@@ -1,14 +1,14 @@
 import { getInstallationClient } from './github.auth'
 import { generateMergeFreezeStatus, generateMergeUnfreezeStatus } from '../helpers/github.checks'
 
-export const mergeFreeze = async (owner, repo, name, reason) => {
+export const mergeFreeze = async (owner, repo, name, baseBranch, reason) => {
   const client = await getInstallationClient(owner, repo)
 
   const { data: openPRs } = await client.pulls.list({
     owner,
     repo,
     state: 'open',
-    base: process.env.MASTER_BRANCH
+    base: baseBranch
   })
 
   openPRs.forEach(async (pr) => {
@@ -45,14 +45,14 @@ export const mergeFreeze = async (owner, repo, name, reason) => {
   }
 }
 
-export const mergeUnfreeze = async (owner, repo, name) => {
+export const mergeUnfreeze = async (owner, repo, name, baseBranch) => {
   const client = await getInstallationClient(owner, repo)
 
   const { data: openPRs } = await client.pulls.list({
     owner,
     repo,
     state: 'open',
-    base: process.env.MASTER_BRANCH
+    base: baseBranch
   })
 
   openPRs.forEach(async (pr) => {

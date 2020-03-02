@@ -4,6 +4,7 @@ import { getInstallationClient } from '../services/github.auth'
 import { mergeUnfreezeRunID } from '../services/github'
 
 import { generateMergeFreezeStatus, generateMergeUnfreezeStatus } from '../helpers/github.checks'
+import { saveGithubInstallation, deleteGithubInstallation } from '../db'
 
 const MergeFreezeStatus = mongoose.model('MergeFreezeStatus')
 
@@ -12,6 +13,10 @@ export const postEvent = async (req, res) => {
   console.log('Action: ', req.body.action)
 
   switch (req.headers['x-github-event']) {
+    case 'installation':
+      onInstallation(req.body)
+      break
+
     case 'check_run':
       onCheckRunEvent(req.body)
       break
@@ -96,5 +101,13 @@ const onPullRequestEvent = async ({ action, repository, pull_request }) => {
       head_sha: pull_request.head.sha,
       ...(isMergeFrozen ? generateMergeFreezeStatus(latestMergeStatus.requester, latestMergeStatus.reason) : generateMergeUnfreezeStatus())
     })
+  }
+}
+
+const onInstallation = async ({ action, installation }) => {
+  if (action === 'created') {
+    await saveGithubInstallation(installation.account.id, installation.id)
+  } else if (action === 'deleted') {
+    await deleteGithubInstallation(installation.account.id, installation.id)
   }
 }

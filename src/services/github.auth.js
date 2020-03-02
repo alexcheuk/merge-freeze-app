@@ -61,6 +61,17 @@ const getInstallations = async () => {
   return jsonResponse
 }
 
+const getUserInstallations = async (username) => {
+  const result = await fetch(`https://api.github.com/users/${username}/installation`, {
+    headers: {
+      authorization: `Bearer ${jwt}`,
+      accept: 'application/vnd.github.machine-man-preview+json'
+    }
+  })
+  const jsonResponse = await result.json()
+  return jsonResponse
+}
+
 const getInstallationClient = async (owner, repo) => {
   console.log('Get Installation Client', owner, repo)
   const installationAccessToken = await getInstallationAccessToken(owner, repo)
@@ -81,6 +92,7 @@ const getInstallationClientByInstallationId = async installationId => {
 }
 
 export {
+  getUserInstallations,
   getInstallationClient,
   getInstallations,
   getInstallationClientByInstallationId

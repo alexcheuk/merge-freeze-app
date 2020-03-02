@@ -1,63 +1,13 @@
 import mongoose from 'mongoose'
-import { createEventAdapter } from '@slack/events-api'
 import { createMessageAdapter } from '@slack/interactive-messages'
 
-import { SlackAPI, getBotInfo } from '../services/slack'
-import { mergeFreeze } from '../services/github'
+import { mergeFreeze, mergeUnfreezePR } from '../services/github'
 
-import { generateMergeFreezeReply } from '../helpers/slack.messages'
+import { generateMergeFreezeReply, generateMergeUnfreezePRReply } from '../helpers/slack.messages'
 
-import { getGithubRepo } from '../db'
-
-/**
- * Slack Interactive Events
- */
-
-const slackEvents = createEventAdapter(process.env.SLACK_SIGNING_SECRET)
-
-slackEvents.on('member_joined_channel', async (event) => {
-  const userInfo = await getBotInfo(event.user)
-
-  // Check if member that join is our Bot
-  // If it is, that means it has been invited to a channel
-  if (userInfo.user.name === 'merge_freeze' && userInfo.user.is_bot) {
-    SlackAPI.chat.postMessage({
-      blocks: [
-        {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text:
-`
-Hey there 👋.
-There are 3 commands available to this channel:
-`
-          }
-        },
-        {
-          type: 'divider'
-        },
-        {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text:
-`
-*\`/mf reason?\`* - Merge freezes all opened Pull Requests going into the base branch
-
-*\`/!mf\`* - Unfreeze all opened Pull Requests going into the base branch
-
-*\`/!mfpr pr_number\`* - Unfreeze one Pull Request by PR Number
-`
-          }
-        }
-      ],
-      channel: event.channel
-    }).then(res => console.log(res))
-  }
-})
-
-export const onEvents = slackEvents.requestListener()
+import { getInstallationBySlackTeamId } from '../db'
+import { getInstallationClientByInstallationId } from '../services/github.auth'
+import { splitRepositoryPath } from '../helpers/github.checks'
 
 /**
  * Slack Interactive Actions
@@ -71,33 +21,68 @@ slackInteractions.action({ type: 'dialog_submission' }, async (payload, respond)
   console.log('Dialog Submission:', payload)
 
   try {
-    const { owner, repo } = await getGithubRepo()
+    // Logs the contents of the action to the console
+    console.log('payload', payload)
 
-    const { numPRs } = await mergeFreeze(owner, repo, payload.user.name, payload.submission.reason)
+    const installation = await getInstallationBySlackTeamId(payload.team.id)
+    const client = await getInstallationClientByInstallationId(installation.installationId)
 
-    await MergeFreezeStatus.setFrozen(
-      {
-        owner,
-        repo,
-        source: 'slack',
-        id: payload.user.id,
-        name: payload.user.name,
-        reason: payload.submission.reason
-      }
-    )
+    if (payload.callback_id === 'confirm_unfreeze_pr_id') {
+      const prID = parseFloat(payload.submission.prId)
 
-    // Send an additional message to the whole channel
-    await respond({
-      replace_original: true,
-      ...generateMergeFreezeReply({
-        user_id: payload.user.id,
-        user_name: payload.user.name,
-        text: payload.submission.reason
-      }, numPRs)
-    })
+      const { owner, repo } = splitRepositoryPath(payload.submission.repo)
+
+      await mergeUnfreezePR(owner, repo, prID, payload.user.name)
+
+      await respond({
+        replace_original: true,
+        ...generateMergeUnfreezePRReply({
+          user_id: payload.user.id,
+          user_name: payload.user.name,
+          owner,
+          repo,
+          prId: prID
+        })
+      })
+    } else {
+      const installedRepos = await (await client.apps.listRepos()).data.repositories
+
+      installedRepos.forEach(async (installedRepo) => {
+        const { owner, repo } = splitRepositoryPath(installedRepo.full_name)
+
+        await mergeFreeze(owner, repo, payload.user.name, installedRepo.default_branch, payload.submission.reason)
+
+        await MergeFreezeStatus.setFrozen(
+          {
+            owner,
+            repo,
+            source: 'slack',
+            id: payload.user.id,
+            name: payload.user.name,
+            reason: payload.submission.reason
+          }
+        )
+      })
+
+      // Send an additional message to the whole channel
+      await respond({
+        replace_original: true,
+        ...generateMergeFreezeReply({
+          user_id: payload.user.id,
+          user_name: payload.user.name,
+          text: payload.submission.reason,
+          repos: installedRepos.map(repo => `\`${repo.full_name}\``).join(', ')
+        })
+      })
+    }
   } catch (e) {
     console.log('Merge Freeze Failed')
     console.log(e)
+
+    await respond({
+      replace_original: true,
+      text: 'Merge Freeze Failed. Pull Request does not exist.'
+    })
   }
 })
 

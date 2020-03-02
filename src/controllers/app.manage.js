@@ -1,0 +1,31 @@
+import { getInstallationByGithubUserId } from '../db'
+import { getInstallationClientByInstallationId } from '../services/github.auth'
+import { testConnection } from '../helpers/slack.messages'
+
+export const getAppManage = async (req, res) => {
+  try {
+    const installation = await getInstallationByGithubUserId(req.user.id)
+
+    const client = await getInstallationClientByInstallationId(installation.installationId)
+
+    const installedRepos = await (await client.apps.listRepos()).data.repositories
+
+    const slackIntegrated = await testConnection(installation.slackBotToken)
+    // console.log(installedRepos)
+
+    res.render('index.html', {
+      installation,
+      user: req.user,
+      installedRepos,
+      slackIntegrated
+    })
+  } catch (e) {
+    console.log(e)
+    return res.render('index.html', {
+      installation: null,
+      user: req.user,
+      installedRepos: [],
+      slackIntegrated: false
+    })
+  }
+}

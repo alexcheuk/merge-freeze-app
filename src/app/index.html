@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+
+<p>
+  <img src="<%= user.photos[0].value %>" />
+</p>
+<p>
+  <%= user.displayName %>
+</p>
+<p>
+  <%= user.emails[0].value %>
+</p>
+
+
+<% if (installation && installedRepos.length > 0) { %>
+  <p>
+    <select>
+      <% installedRepos.forEach((repo) => { %>
+        <option><%= repo.full_name %></option>
+     <% }) %>
+    </select>
+  </p>
+<% } %>
+
+<% if (installation && installedRepos.length > 0) { %>
+  <a href='https://github.com/apps/merge-freeze-test/installations/<%= installation.installationId %>'>Configure App</a>
+<% } else { %>
+  <a href='https://github.com/apps/merge-freeze-test/installations/new'>Install App</a>
+<% } %>
+
+<% if (installation && !slackIntegrated) { %>
+  <a href="https://slack.com/oauth/v2/authorize?client_id=791657355399.942490422804&scope=channels:read,chat:write,commands,groups:read,im:history,incoming-webhook,users:read,channels:join"><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x"></a>
+<% } %>
+
+</body>
+</html>
