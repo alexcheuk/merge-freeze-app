@@ -17,7 +17,8 @@ export const getAppManage = async (req, res) => {
       installation,
       user: req.user,
       installedRepos,
-      slackIntegrated
+      slackIntegrated,
+      slackClientId: process.env.SLACK_CLIENT_ID
     })
   } catch (e) {
     console.log(e)
@@ -25,7 +26,8 @@ export const getAppManage = async (req, res) => {
       installation: null,
       user: req.user,
       installedRepos: [],
-      slackIntegrated: false
+      slackIntegrated: false,
+      slackClientId: process.env.SLACK_CLIENT_ID
     })
   }
 }
