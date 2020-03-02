@@ -30,9 +30,9 @@
 <% } %>
 
 <% if (installation && installedRepos.length > 0) { %>
-  <a href='https://github.com/apps/merge-freeze-test/installations/<%= installation.installationId %>'>Configure App</a>
+  <a href='https://github.com/apps/<%= githubAppName %>/installations/<%= installation.installationId %>'>Configure App</a>
 <% } else { %>
-  <a href='https://github.com/apps/merge-freeze-test/installations/new'>Install App</a>
+  <a href='https://github.com/apps/<%= githubAppName %>/installations/new'>Install App</a>
 <% } %>
 
 <% if (installation && !slackIntegrated) { %>
