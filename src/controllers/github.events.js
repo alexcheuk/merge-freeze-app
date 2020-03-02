@@ -11,6 +11,7 @@ const MergeFreezeStatus = mongoose.model('MergeFreezeStatus')
 export const postEvent = async (req, res) => {
   console.log('Event: ', req.headers['x-github-event'])
   console.log('Action: ', req.body.action)
+  console.log('Payload: ', req.body)
 
   switch (req.headers['x-github-event']) {
     case 'installation':
@@ -106,8 +107,8 @@ const onPullRequestEvent = async ({ action, repository, pull_request }) => {
 
 const onInstallation = async ({ action, installation }) => {
   if (action === 'created') {
-    await saveGithubInstallation(installation.account.id, installation.id)
+    await saveGithubInstallation(installation.target_id, installation.id)
   } else if (action === 'deleted') {
-    await deleteGithubInstallation(installation.account.id, installation.id)
+    await deleteGithubInstallation(installation.target_id, installation.id)
   }
 }
