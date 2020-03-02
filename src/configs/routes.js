@@ -23,4 +23,6 @@ module.exports = (app) => {
   app.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/login' }), getAuthGithubCallback)
 
   app.get('/manage', isLoggedIn, getAppManage)
+
+  app.get('*', (req, res) => res.send(404))
 }

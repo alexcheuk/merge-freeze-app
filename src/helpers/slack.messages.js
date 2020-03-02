@@ -21,6 +21,7 @@ export const generateMergeFreezeReply = ({ user_id, user_name, text, repos }) =>
   return {
     replace_original: 'true',
     response_type: 'in_channel',
+    text: `:snowflake: *MERGE FREEZE* ${text ? `- ${text}` : ''} :snowflake:`,
     blocks: [
       {
         type: 'section',
@@ -60,6 +61,7 @@ export const generateMergeFreezeReply = ({ user_id, user_name, text, repos }) =>
 export const generateMergeUnfreezeReply = ({ user_id, user_name, text, repos }) => {
   return {
     response_type: 'in_channel',
+    text: `:sunny: *MERGE READY* ${text ? `- ${text}` : ''} :sunny:`,
     blocks: [
       {
         type: 'section',
@@ -99,6 +101,7 @@ export const generateMergeUnfreezeReply = ({ user_id, user_name, text, repos }) 
 export const generateMergeUnfreezePRReply = ({ user_id, owner, repo, prId }) => {
   return {
     response_type: 'in_channel',
+    text: `:sunny: Pull Request #${prId} unfreezed :sunny:`,
     blocks: [
       {
         type: 'section',
@@ -120,7 +123,7 @@ export const generateMergeUnfreezePRReply = ({ user_id, owner, repo, prId }) => 
   }
 }
 
-export const sendWelcomeMessage = (token, channelId) => {
+export const sendWelcomeMessage = ({ token, channelId, repos, installUserId }) => {
   return SlackAPI.chat.postMessage({
     token,
     text: 'Merge Freeze App integrated',
@@ -132,7 +135,7 @@ export const sendWelcomeMessage = (token, channelId) => {
           text:
 `
 Hey there 👋.
-There are 3 commands available to this channel:
+*Merge Freeze* has been added by <@${installUserId}> for ${repos.map(repo => `\`${repo}\``).join(', ')}
 `
         }
       },
@@ -145,6 +148,8 @@ There are 3 commands available to this channel:
           type: 'mrkdwn',
           text:
 `
+There are 3 commands available to this channel:
+
 *\`/mf reason?\`* - Merge freezes all opened Pull Requests going into the base branch
 
 *\`/!mf\`* - Unfreeze all opened Pull Requests going into the base branch
