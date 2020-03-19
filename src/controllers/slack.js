@@ -14,9 +14,7 @@ export const postMergeFreeze = async (req, res) => {
 
     await openConfirmationDialog(installation.slackBotToken, req.body.trigger_id, req.body.text)
 
-    res.json({
-      response_type: 'in_channel'
-    })
+    res.json()
   } catch (e) {
     res.send('Failed to merge freeze')
   }
