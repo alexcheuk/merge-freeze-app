@@ -104,9 +104,9 @@ export const postMergeFreezeStats = async (req, res) => {
 
     const allTimeStatus = await MergeFreezeStatus.getStatusListByRepo(owner, repo)
     // Not optimized, regrabbing subsets from data.
-    const past2WeeksTimeStatus = await MergeFreezeStatus.getStatusListByRepo(owner, repo, {
+    const thisMonthStatus = await MergeFreezeStatus.getStatusListByRepo(owner, repo, {
       datetime: {
-        $gte: moment().subtract(2, 'weeks').toDate()
+        $gte: moment().startOf('month').toDate()
       }
     })
     const lastMonthTimeStatus = await MergeFreezeStatus.getStatusListByRepo(owner, repo, {
@@ -117,10 +117,10 @@ export const postMergeFreezeStats = async (req, res) => {
     })
 
     const allTimeStats = getMergeFreezeStats(allTimeStatus)
-    const past2WeeksStatus = getMergeFreezeStats(past2WeeksTimeStatus)
+    const thisMonthStats = getMergeFreezeStats(thisMonthStatus)
     const lastMonthStatus = getMergeFreezeStats(lastMonthTimeStatus)
 
-    return res.json(generateStatsMessage(allTimeStats, past2WeeksStatus, lastMonthStatus))
+    return res.json(generateStatsMessage(allTimeStats, thisMonthStats, lastMonthStatus))
   } catch (e) {
     console.log(e)
     res.send('Pull Request does not exist.')
