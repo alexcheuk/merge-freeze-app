@@ -16,6 +16,14 @@ const MergeFreezeStatusSchema = new Schema({
  * Statics
  */
 
+MergeFreezeStatusSchema.statics.getStatusListByRepo = function (owner, repo, query = {}) {
+  return this.find({
+    repoOwner: owner,
+    repoName: repo,
+    ...query
+  })
+}
+
 MergeFreezeStatusSchema.statics.getLastStatus = function (owner, repo, callback) {
   return this.findOne({
     repoOwner: owner,

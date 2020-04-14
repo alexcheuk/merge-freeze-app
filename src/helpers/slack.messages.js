@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 import { WebClient } from '@slack/web-api'
 
 const SlackAPI = new WebClient()
@@ -161,4 +163,95 @@ There are 3 commands available to this channel:
     ],
     channel: channelId
   })
+}
+
+export const generateStatsMessage = (allTimeStats, past2WeeksStats, lastMonthStats) => {
+  return {
+    response_type: 'in_channel',
+    text: '*:snowflake::chart_with_upwards_trend::sunny: Merge Freeze Usage Stats :sunny::chart_with_downwards_trend::snowflake:*',
+    blocks: [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: '*:snowflake::chart_with_upwards_trend::sunny: Merge Freeze Usage Stats :sunny::chart_with_downwards_trend::snowflake:*'
+        }
+      },
+      {
+        type: 'divider'
+      },
+      {
+        type: 'context',
+        elements: [
+          {
+            type: 'mrkdwn',
+            text: '*Past 2 Weeks*'
+          }
+        ]
+      },
+      {
+        type: 'section',
+        fields: [
+          {
+            type: 'mrkdwn',
+            text: `*Average Duration:*\n${moment.duration(past2WeeksStats.avg).humanize()}`
+          },
+          {
+            type: 'mrkdwn',
+            text: `*# of Merge Freeze:*\n${past2WeeksStats.count}`
+          }
+        ]
+      },
+      {
+        type: 'divider'
+      },
+      {
+        type: 'context',
+        elements: [
+          {
+            type: 'mrkdwn',
+            text: '*Last Month*'
+          }
+        ]
+      },
+      {
+        type: 'section',
+        fields: [
+          {
+            type: 'mrkdwn',
+            text: `*Average Duration:*\n${moment.duration(lastMonthStats.avg).humanize()}`
+          },
+          {
+            type: 'mrkdwn',
+            text: `*# of Merge Freeze:*\n${lastMonthStats.count}`
+          }
+        ]
+      },
+      {
+        type: 'divider'
+      },
+      {
+        type: 'context',
+        elements: [
+          {
+            type: 'mrkdwn',
+            text: '*All Time*'
+          }
+        ]
+      },
+      {
+        type: 'section',
+        fields: [
+          {
+            type: 'mrkdwn',
+            text: `*Average Duration:*\n${moment.duration(allTimeStats.avg).humanize()}`
+          },
+          {
+            type: 'mrkdwn',
+            text: `*# of Merge Freeze:*\n${allTimeStats.count}`
+          }
+        ]
+      }
+    ]
+  }
 }

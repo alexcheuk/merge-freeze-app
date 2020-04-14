@@ -1,12 +1,15 @@
+import moment from 'moment'
+
 import mongoose from 'mongoose'
 
 import { getInstallationBySlackTeamId } from '../db'
 import { openConfirmationDialog, openUnfreezePRConfirmationDialog } from '../services/slack'
 import { mergeUnfreeze, mergeUnfreezePR } from '../services/github'
 
-import { generateMergeUnfreezeReply, generateMergeUnfreezePRReply } from '../helpers/slack.messages'
+import { generateMergeUnfreezeReply, generateMergeUnfreezePRReply, generateStatsMessage } from '../helpers/slack.messages'
 import { getInstallationClientByInstallationId } from '../services/github.auth'
 import { splitRepositoryPath } from '../helpers/github.checks'
+import { getMergeFreezeStats } from '../helpers/stats'
 
 export const postMergeFreeze = async (req, res) => {
   try {
@@ -84,6 +87,42 @@ export const postMergeUnfreezePR = async (req, res) => {
 
     res.send('No repository setup')
   } catch (e) {
+    res.send('Pull Request does not exist.')
+  }
+}
+
+export const postMergeFreezeStats = async (req, res) => {
+  const MergeFreezeStatus = mongoose.model('MergeFreezeStatus')
+
+  try {
+    const installation = await getInstallationBySlackTeamId(req.body.team_id)
+    const client = await getInstallationClientByInstallationId(installation.installationId)
+
+    const installedRepos = await (await client.apps.listRepos()).data.repositories
+
+    const { owner, repo } = splitRepositoryPath(installedRepos[0].full_name)
+
+    const allTimeStatus = await MergeFreezeStatus.getStatusListByRepo(owner, repo)
+    // Not optimized, regrabbing subsets from data.
+    const past2WeeksTimeStatus = await MergeFreezeStatus.getStatusListByRepo(owner, repo, {
+      datetime: {
+        $gte: moment().subtract(2, 'weeks').toDate()
+      }
+    })
+    const lastMonthTimeStatus = await MergeFreezeStatus.getStatusListByRepo(owner, repo, {
+      datetime: {
+        $gte: moment().subtract(1, 'months').startOf('month').toDate(),
+        $lt: moment().subtract(1, 'months').endOf('month').toDate()
+      }
+    })
+
+    const allTimeStats = getMergeFreezeStats(allTimeStatus)
+    const past2WeeksStatus = getMergeFreezeStats(past2WeeksTimeStatus)
+    const lastMonthStatus = getMergeFreezeStats(lastMonthTimeStatus)
+
+    return res.json(generateStatsMessage(allTimeStats, past2WeeksStatus, lastMonthStatus))
+  } catch (e) {
+    console.log(e)
     res.send('Pull Request does not exist.')
   }
 }
