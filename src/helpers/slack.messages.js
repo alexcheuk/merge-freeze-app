@@ -165,7 +165,7 @@ There are 3 commands available to this channel:
   })
 }
 
-export const generateStatsMessage = (allTimeStats, past2WeeksStats, lastMonthStats) => {
+export const generateStatsMessage = (allTimeStats, thisMonthStats, lastMonthStats) => {
   return {
     response_type: 'in_channel',
     text: '*:snowflake::chart_with_upwards_trend::sunny: Merge Freeze Usage Stats :sunny::chart_with_downwards_trend::snowflake:*',
@@ -185,7 +185,7 @@ export const generateStatsMessage = (allTimeStats, past2WeeksStats, lastMonthSta
         elements: [
           {
             type: 'mrkdwn',
-            text: '*Past 2 Weeks*'
+            text: '*This Month*'
           }
         ]
       },
@@ -194,11 +194,11 @@ export const generateStatsMessage = (allTimeStats, past2WeeksStats, lastMonthSta
         fields: [
           {
             type: 'mrkdwn',
-            text: `*Average Duration:*\n${moment.duration(past2WeeksStats.avg).humanize()}`
+            text: `*Average Duration:*\n${moment.duration(thisMonthStats.avg).humanize()}`
           },
           {
             type: 'mrkdwn',
-            text: `*# of Merge Freeze:*\n${past2WeeksStats.count}`
+            text: `*# of Merge Freeze:*\n${thisMonthStats.count}`
           }
         ]
       },
