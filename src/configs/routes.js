@@ -16,6 +16,7 @@ module.exports = (app) => {
   app.post('/slack/merge-freeze', verifySignature, isAllowedChannel, slackController.postMergeFreeze)
   app.post('/slack/merge-unfreeze', verifySignature, isAllowedChannel, slackController.postMergeUnfreeze)
   app.post('/slack/merge-unfreeze-pr', verifySignature, isAllowedChannel, slackController.postMergeUnfreezePR)
+  app.post('/slack/merge-freeze-stats', verifySignature, isAllowedChannel, slackController.postMergeFreezeStats)
 
   app.get('/auth/slack/callback', isLoggedIn, getAuthSlackCallback)
 
