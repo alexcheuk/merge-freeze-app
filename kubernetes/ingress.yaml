@@ -1,0 +1,18 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: merge-freeze
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/proxy-body-size: 512m
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+spec:
+  rules:
+    - host: "mergefreeze.procurify.com"
+      http:
+        paths:
+          - path: /?(.*)
+            backend:
+              serviceName: merge-freeze
+              servicePort: 3100
+              

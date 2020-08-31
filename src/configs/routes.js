@@ -12,6 +12,10 @@ import { getAppManage } from '../controllers/app.manage'
 
 module.exports = (app) => {
   app.post('/github', verifyGithubPayload, githubController.postEvent)
+  app.get('/slack', async (req, res) => {
+    res.json({message: 'Server up and running'})
+  })
+  
 
   app.post('/slack/merge-freeze', verifySignature, isAllowedChannel, slackController.postMergeFreeze)
   app.post('/slack/merge-unfreeze', verifySignature, isAllowedChannel, slackController.postMergeUnfreeze)
