@@ -39,6 +39,8 @@
     "@octokit/app": "^4.1.0",
     "@octokit/auth-app": "^2.4.2",
     "@octokit/rest": "^16.28.9",
+    "@sentry/node": "^5.25.0",
+    "@sentry/tracing": "^5.25.0",
     "@slack/events-api": "^2.3.1",
     "@slack/interactive-messages": "^1.4.1",
     "@slack/web-api": "^5.7.0",
@@ -61,6 +63,8 @@
     "node-fetch": "^2.6.0",
     "passport": "^0.4.1",
     "passport-github2": "^0.1.11",
-    "qs": "^6.9.1"
+    "qs": "^6.9.1",
+    "winston": "^3.3.3",
+    "winston-transport": "^4.4.0"
   }
 }

@@ -11,9 +11,14 @@ import session from 'express-session'
 import path from 'path'
 import fs from 'fs'
 
+import * as Sentry from '@sentry/node'
+
 dotenv.config()
 
 const app = express()
+
+/** Logger config */
+require('./sentry').default(app)
 
 /**
  * Mongoose Config
@@ -75,6 +80,8 @@ if (process.env.NODE_ENV === 'development') {
   // only use in development
   app.use(errorHandler())
 } else {
+  app.use(Sentry.Handlers.errorHandler())
+
   app.use((err, req, res, next) => {
     console.error(err)
     res.status(500).send('Server Error')
