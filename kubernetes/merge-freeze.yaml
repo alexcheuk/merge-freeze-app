@@ -16,8 +16,9 @@ spec:
         - name: merge-freeze
           image: 146043269776.dkr.ecr.us-west-2.amazonaws.com/merge-freeze:fake-img-tag
           args:
-            - sh
-            - ./entrypoint.sh
+            - npm
+            - run
+            - start-prod
           ports:
             - containerPort: 3100
           livenessProbe:
@@ -42,15 +43,14 @@ spec:
               memory: 150Mi
               cpu: "0.05"
           env:
-            - name: ENTRY_COMMAND
-              value: npm run start-prod
             - name: PORT
               value: "3100"
-            - name: VAULT_ADDR
-              value: https://vault.procurify.xyz 
             - name: NODE_ENV
               value: production
-      serviceAccountName: vault-auth
+          envFrom:
+            - secretRef:
+              name: ssm-parameters   
+      serviceAccountName: external-secret-auth
          
 
 ---
