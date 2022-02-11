@@ -209,6 +209,7 @@ workflows:
                 only:
                   - /^master$/
                   - /^k8s-migration$/
+                  - /^dso-55-mergefreeze-update-secret-source-from$/
         - kubernetes_deployment:
             context: production
             name: production_deployment
