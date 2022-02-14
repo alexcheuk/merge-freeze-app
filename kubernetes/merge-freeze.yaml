@@ -49,7 +49,7 @@ spec:
               value: production
           envFrom:
             - secretRef:
-              name: ssm-parameters   
+                name: ssm-parameters   
       serviceAccountName: external-secret-auth
          
 
