@@ -15,6 +15,7 @@ restore_yarn_cache: &restore_yarn_cache
       - monorepo-v2-dependency-cache-{{ checksum "yarn.lock" }}
       - monorepo-v2-dependency-cache-
 
+aliases:
   - &assume-role
       name: Assume role
       command: |
