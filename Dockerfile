@@ -1,4 +1,4 @@
-FROM node:alpine as builder
+FROM node:14 as builder
 
 RUN apk update && apk add ca-certificates
 
