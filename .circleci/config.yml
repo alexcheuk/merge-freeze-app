@@ -45,7 +45,7 @@ aliases:
 jobs:
   build_and_push:
     docker:
-      - image: circleci/node:12
+      - image: cimg/python:3.10.2
     working_directory: *workspace
     steps:
       - attach_workspace:
