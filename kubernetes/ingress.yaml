@@ -12,7 +12,10 @@ spec:
       http:
         paths:
           - path: /?(.*)
+            pathType: Prefix
             backend:
-              serviceName: merge-freeze
-              servicePort: 3100
+              service: 
+                name: merge-freeze
+                port: 
+                  number: 3100
               
