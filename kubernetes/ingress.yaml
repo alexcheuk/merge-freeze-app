@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: merge-freeze
@@ -12,7 +12,10 @@ spec:
       http:
         paths:
           - path: /?(.*)
+            pathType: Prefix
             backend:
-              serviceName: merge-freeze
-              servicePort: 3100
+              service: 
+                name: merge-freeze
+                port: 
+                  number: 3100
               
