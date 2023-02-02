@@ -8,7 +8,7 @@
     "babel-node": "babel-node",
     "build": "babel src --out-dir dist --source-maps inline && cp -r src/app dist/app",
     "prepublishOnly": "npm run build",
-    "start": "nodemon --exec babel-node src/server.js",
+    "start": "npx nodemon --exec babel-node src/server.js",
     "start-prod": "npm run build && node dist/server.js"
   },
   "repository": {
@@ -32,8 +32,7 @@
     "eslint-config-standard": "^14.1.0",
     "eslint-plugin-babel": "^5.3.0",
     "eslint-plugin-import": "^2.20.1",
-    "eslint-plugin-standard": "^4.0.1",
-    "ngrok": "^3.2.7"
+    "eslint-plugin-standard": "^4.0.1"
   },
   "dependencies": {
     "@octokit/app": "^4.1.0",
