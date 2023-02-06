@@ -178,3 +178,4 @@ WIP
 # How to deploy
 All commits to the `master` branch will automatically deploy
 
+> Link to diagrams: https://excalidraw.com/#json=Z4NGW5OFSx5NHyh3mmyO5,K992lXNKGAlakOF8oBHaNg
