@@ -1,7 +1,1 @@
-## Get Started
-
-### Start Server
-`yarn start`
-
-### Start ngrok
-`ngrok http -subdomain=freezemerge 3000`
+![Merge Freeze Diagram](https://github.com/alexcheuk/mergefreeze/assets/1242663/49c65735-28f7-4d3f-bce4-fa1fe952c2cb)
