@@ -3,16 +3,20 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "files": [
+    "src",
+    "dist",
+    ".env.example"
+  ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
     "@octokit/webhooks-types": "^7.3.1",
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.10.5",
-    "morgan": "^1.10.0",
     "typescript": "^5.3.3",
     "vite": "^5.0.8",
     "vite-node": "^1.1.3",
@@ -38,6 +42,7 @@
     "express-session": "^1.17.3",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.3",
+    "morgan": "^1.10.0",
     "passport": "^0.7.0",
     "passport-github2": "^0.1.12",
     "passport-jwt": "^4.0.1",

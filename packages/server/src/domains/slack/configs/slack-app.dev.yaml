@@ -1,0 +1,43 @@
+display_information:
+  name: Freeze Merge Dev
+  description: App for testing Merge Freeze locally
+  background_color: '#004492'
+features:
+  bot_user:
+    display_name: Merge Freeze
+    always_online: true
+  slash_commands:
+    - command: /mf
+      url: https://58ba-216-71-215-237.ngrok-free.app/slack/events
+      description: Merge Freeze
+      usage_hint: reason?
+      should_escape: false
+    - command: /!mf
+      url: https://58ba-216-71-215-237.ngrok-free.app/slack/events
+      description: Unfreeze all PR
+      should_escape: false
+    - command: /!mfpr
+      url: https://58ba-216-71-215-237.ngrok-free.app/slack/events
+      description: Unfreeze one PR
+      usage_hint: PR Number
+      should_escape: false
+oauth_config:
+  redirect_urls:
+    - http://mergefreeze.local/auth/slack/callback
+  scopes:
+    bot:
+      - channels:read
+      - chat:write
+      - commands
+      - groups:read
+      - incoming-webhook
+      - users:read
+      - channels:join
+      - mpim:read
+settings:
+  interactivity:
+    is_enabled: true
+    request_url: https://58ba-216-71-215-237.ngrok-free.app/slack/events
+  org_deploy_enabled: false
+  socket_mode_enabled: false
+  token_rotation_enabled: false

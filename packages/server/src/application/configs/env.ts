@@ -7,12 +7,12 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const envPath = import.meta.env.PROD
-  ? path.resolve(__dirname, '../../../.env')
-  : path.resolve(__dirname, '../../../../../.env')
+  ? path.resolve(__dirname, '../.env')
+  : path.resolve(__dirname, '../../../.env')
 
 const envTemplatePath = import.meta.env.PROD
-  ? path.resolve(__dirname, '../../../.env.example')
-  : path.resolve(__dirname, '../../../../../.env.example')
+  ? path.resolve(__dirname, '../.env.example')
+  : path.resolve(__dirname, '../../../.env.example')
 
 dotenv.config({
   path: envPath,

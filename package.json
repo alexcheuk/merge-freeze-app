@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "npx nx run-many --target=dev --all",
+    "build": "pnpm run -r build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc": "tsc --noEmit"
   },

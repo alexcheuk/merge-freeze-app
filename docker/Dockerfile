@@ -1,0 +1,24 @@
+FROM node:18-alpine as builder
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+RUN apk update && apk add ca-certificates
+
+FROM builder AS build
+COPY . /usr/src/app
+WORKDIR /usr/src/app
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN pnpm run -r build
+RUN pnpm deploy --filter=server --prod /prod/server
+RUN pnpm deploy --filter=web --prod /prod/web
+
+FROM builder AS server-app
+COPY --from=build /prod/server /prod/server
+WORKDIR /prod/server
+EXPOSE 3000
+CMD [ "node", "dist/app" ]
+
+FROM nginx:stable-alpine AS web-app
+COPY --from=build /prod/web/dist /usr/src/app
+COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
