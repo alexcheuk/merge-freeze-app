@@ -20,5 +20,5 @@ CMD [ "node", "dist/app" ]
 
 FROM nginx:stable-alpine AS web-app
 COPY --from=build /prod/web/dist /usr/src/app
-COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+COPY docker/web/nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
