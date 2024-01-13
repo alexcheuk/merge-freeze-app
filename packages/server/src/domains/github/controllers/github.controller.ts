@@ -1,7 +1,17 @@
 import { NextFunction, Request, Response } from 'express'
-import { WebhookEventName, InstallationEvent } from '@octokit/webhooks-types'
+import {
+  WebhookEventName,
+  InstallationEvent,
+  CheckRunEvent,
+  CheckSuiteEvent,
+  PullRequestEvent,
+} from '@octokit/webhooks-types'
 import { uninstall } from '../../installation'
-import { saveInstallationFromGithub } from '../use-cases'
+import {
+  saveInstallationFromGithub,
+  syncStatusOnCheckRun,
+  unfreezeSinglePR,
+} from '../use-cases'
 
 const eventsController = async (
   req: Request,
@@ -43,6 +53,76 @@ const eventsController = async (
 
       case 'installation_repositories':
         // const repoEvent: InstallationRepositoriesEvent = req.body
+
+        return res.status(200).send()
+
+      case 'check_run':
+        const checkRunEvent: CheckRunEvent = req.body
+
+        if (!checkRunEvent.installation?.id) {
+          return res.status(200).send()
+        }
+
+        if (checkRunEvent.action === 'rerequested') {
+          if (checkRunEvent.installation?.id) {
+            await syncStatusOnCheckRun({
+              ref: checkRunEvent.check_run.head_sha,
+              githubInstallationId: checkRunEvent.installation?.id,
+              owner: checkRunEvent.repository.owner.login,
+              repo: checkRunEvent.repository.name,
+            })
+          }
+        } else if (
+          checkRunEvent.action === 'requested_action' &&
+          checkRunEvent.requested_action?.identifier === 'unfreeze_pr'
+        ) {
+          await unfreezeSinglePR({
+            ref: checkRunEvent.check_run.head_sha,
+            githubInstallationId: checkRunEvent.installation?.id,
+            owner: checkRunEvent.repository.owner.login,
+            repo: checkRunEvent.repository.name,
+            requester: checkRunEvent.sender.login,
+            requesterId: checkRunEvent.sender.id.toString(),
+          })
+        }
+        return res.status(200).send()
+
+      case 'check_suite':
+        const checkSuiteEvent: CheckSuiteEvent = req.body
+
+        if (
+          checkSuiteEvent.action === 'rerequested' ||
+          checkSuiteEvent.action === 'requested'
+        ) {
+          if (checkSuiteEvent.installation?.id) {
+            await syncStatusOnCheckRun({
+              ref: checkSuiteEvent.check_suite.head_sha,
+              githubInstallationId: checkSuiteEvent.installation?.id,
+              owner: checkSuiteEvent.repository.owner.login,
+              repo: checkSuiteEvent.repository.name,
+            })
+          }
+        }
+
+        return res.status(200).send()
+
+      case 'pull_request':
+        const pullRequestEvent: PullRequestEvent = req.body
+
+        if (
+          pullRequestEvent.action === 'opened' ||
+          pullRequestEvent.action === 'reopened' ||
+          pullRequestEvent.action === 'synchronize'
+        ) {
+          if (pullRequestEvent.installation?.id) {
+            await syncStatusOnCheckRun({
+              ref: pullRequestEvent.pull_request.head.sha,
+              githubInstallationId: pullRequestEvent.installation?.id,
+              owner: pullRequestEvent.repository.owner.login,
+              repo: pullRequestEvent.repository.name,
+            })
+          }
+        }
 
         return res.status(200).send()
 
