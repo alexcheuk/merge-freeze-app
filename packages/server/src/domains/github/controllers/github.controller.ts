@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import {
+import { InstallationEvent, CheckRunEvent, CheckSuiteEvent, PullRequestEvent } from '@octokit/webhooks-types'
   WebhookEventName,
   InstallationEvent,
   CheckRunEvent,
@@ -13,7 +13,7 @@ import {
   unfreezeSinglePR,
 } from '../use-cases'
 
-const eventsController = async (
+export const eventsController = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -21,7 +21,7 @@ const eventsController = async (
   const event = req.headers['x-github-event'] as WebhookEventName
 
   console.log(`Received Github Event: ${event}`)
-  console.log(`Received Github Payload:`, req.body)
+  console.log('Received Github Payload:', req.body)
   try {
     switch (event) {
       case 'installation':
@@ -32,7 +32,7 @@ const eventsController = async (
             await saveInstallationFromGithub(
               installationEvent.sender.id,
               installationEvent.installation.id,
-              installationEvent.repositories?.map((repo) => {
+              (installationEvent.repositories || []).map((repo) => {
                 const [owner, repoName] = repo.full_name.split('/')
 
                 return {
