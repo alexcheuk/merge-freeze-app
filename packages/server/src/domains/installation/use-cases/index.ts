@@ -1,8 +1,8 @@
-import { installationDb } from '../data-access'
 import { makeUninstall } from './uninstall'
 import { makeGetInstallationByGithubUserId } from './get-installation'
 import { makeGithubApi } from '../../github/data-access/github.api'
-import { slackApi } from '../../slack/data-access'
+import { slackApi } from '../../slack/data'
+import { installationDb } from '../data'
 
 const getInstallationByGithubUserId = makeGetInstallationByGithubUserId({
   installationDb,

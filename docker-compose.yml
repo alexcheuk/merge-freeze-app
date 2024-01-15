@@ -24,3 +24,5 @@ services:
       target: server-app
     env_file:
       - packages/server/.env
+  mongodb:
+    image: mongo:7.0.5

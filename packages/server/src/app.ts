@@ -1,6 +1,5 @@
-import './application/configs/env'
+import './infrastructure/configs/env'
 import express from 'express'
-import mongoose from 'mongoose'
 import morgan from 'morgan'
 import cookieParser from 'cookie-parser'
 import passport from 'passport'
@@ -10,22 +9,15 @@ import githubRouter from './domains/github/routes'
 import authRouter from './domains/auth/routes'
 import userRouter from './domains/user/routes'
 import installationRouter from './domains/installation/routes'
+import { initialize as initializeMongoose } from './infrastructure/db/mongoose'
 
-import DevTunnel from './application/configs/dev.tunnel'
+import DevTunnel from './infrastructure/configs/dev.tunnel'
 
 if (import.meta.env.DEV) DevTunnel()
 
 const app = express()
 
-mongoose.connect(process.env.MONGODB_URL || '')
-
-mongoose.connection.on('error', (err) => {
-  console.error(err)
-  console.log(
-    '%s MongoDB connection error. Please make sure MongoDB is running.'
-  )
-  process.exit()
-})
+initializeMongoose()
 
 app.use(morgan('common'))
 

@@ -1,6 +1,6 @@
-import { UnfreezeReposDTO } from '../interfaces/dtos/unfreeze-repos.dto'
-import { InstallationDb } from '../../installation/interfaces/data-access/installation-db'
+import { UnfreezeReposDTO } from './dtos/unfreeze-repos.dto'
 import { unfreezeRepo } from '.'
+import { InstallationDb } from '../../installation/data/installation.db.interface'
 
 interface Dependency {
   installationDb: InstallationDb

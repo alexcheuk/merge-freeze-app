@@ -1,6 +1,7 @@
-import SlackBolt, { Installation, LogLevel } from '@slack/bolt'
-import { installationDb } from '../../installation/data-access'
+import SlackBolt, { LogLevel } from '@slack/bolt'
 import SlackController from '../controllers/slack.controller'
+import { installationDb } from '../../installation/data'
+import { SlackInstallation } from '../data/entities/slack-installation.entity'
 
 const { App, ExpressReceiver } = SlackBolt
 
@@ -37,7 +38,7 @@ const receiver = new ExpressReceiver({
         installQuery.teamId as string
       )
 
-      return installation?.slackInstallation as Installation<'v2'>
+      return installation?.slackInstallation as SlackInstallation
     },
   },
   redirectUri: 'http://mergefreeze.local/auth/slack/callback',
@@ -47,7 +48,7 @@ const receiver = new ExpressReceiver({
     callbackOptions: {
       afterInstallation: async (installation, ...args) => {
         return await SlackController.slackInstallationCallback(
-          installation as Installation<'v2'>,
+          installation as SlackInstallation,
           ...args
         )
       },

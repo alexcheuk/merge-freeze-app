@@ -1,6 +1,6 @@
 import { buildMergeFreezeModal } from '../utils/slack-messages'
-import { InstallationDb } from '../../installation/interfaces/data-access/installation-db'
-import { RequestMergeFreezeDTO } from '../interfaces/dtos/request-merge-freeze.dto'
+import { RequestMergeFreezeDTO } from './dtos/request-merge-freeze.dto'
+import { InstallationDb } from '../../installation/data/installation.db.interface'
 
 interface Dependencies {
   installationDb: InstallationDb

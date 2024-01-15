@@ -1,7 +1,9 @@
 import { createAppAuth } from '@octokit/auth-app'
 import { Octokit } from '@octokit/rest'
 
-const CHECK_NAME = 'merge-freeze'
+const CHECK_NAME = 'Merge Freeze'
+
+export type GithubAPI = typeof makeGithubApi
 
 export const makeGithubApi = ({
   installationId,
@@ -53,20 +55,26 @@ export const makeGithubApi = ({
         conclusion,
         summary = '',
         details = '',
+        actions,
       }: {
         conclusion: 'failure' | 'success'
         title: string
         summary?: string
         details?: string
+        actions?: {
+          label: string
+          description: string
+          identifier: string
+        }[]
       }
     ) => {
       return octokit.checks.create({
         owner,
         repo,
+        name: CHECK_NAME,
         check_name: CHECK_NAME,
         head_sha: ref,
         status: 'completed',
-        name: 'Merge Freeze',
         conclusion,
         title,
         output: {
@@ -74,6 +82,7 @@ export const makeGithubApi = ({
           summary,
           text: details,
         },
+        actions,
       })
     },
     updateCheck: (
@@ -100,6 +109,7 @@ export const makeGithubApi = ({
         check_run_id: checkId,
         owner,
         repo,
+        name: CHECK_NAME,
         check_name: CHECK_NAME,
         status: 'completed',
         conclusion,

@@ -1,4 +1,4 @@
-import { makeController } from '../../../application/utils/make-controller'
+import { makeController } from '../../../infrastructure/utils/make-controller'
 import { AuthenticatedRequest } from '../../auth/interfaces/controllers/auth-controller'
 import { getProfile as getProfileUseCase } from '../use-cases'
 

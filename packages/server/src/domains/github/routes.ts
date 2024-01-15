@@ -7,6 +7,7 @@ import {
   CheckSuiteEvent,
   InstallationEvent,
   PullRequestEvent,
+  Schema,
   WebhookEventName,
 } from '@octokit/webhooks-types'
 
@@ -16,57 +17,74 @@ router.post(
   '/github/events',
   verifyGithubPayload,
   async (req: Request, res: Response, next: NextFunction) => {
-    const eventHandlers = {
-      'installation': (eventPayload) => {
-        const { action } = eventPayload;
-        if (action === 'created') {
-          GithubEventsController.installationCreated(eventPayload, res);
-        } else if (action === 'deleted') {
-          GithubEventsController.installationDeleted(eventPayload, res);
-        }
-      },
-      'installation_repositories': () => {
-        res.sendStatus(200);
-      },
-      'check_run': (eventPayload) => {
-        const { action, requested_action } = eventPayload;
-        if (action === 'rerequested') {
-          GithubEventsController.checkRunRerequested(eventPayload, res);
-        } else if (action === 'requested_action' && requested_action?.identifier === 'unfreeze_pr') {
-          GithubEventsController.unfreezeSinglePRAction(eventPayload, res);
-        }
-      },
-      'check_suite': (eventPayload) => {
-        const { action } = eventPayload;
-        if (action === 'rerequested') {
-          GithubEventsController.checkSuiteRerequested(eventPayload, res);
-        } else if (action === 'requested') {
-          GithubEventsController.checkSuiteRequested(eventPayload, res);
-        }
-      },
-      'pull_request': (eventPayload) => {
-        const { action } = eventPayload;
-        if (['opened', 'reopened', 'synchronize'].includes(action)) {
-          GithubEventsController.pullRequestSync(eventPayload, res);
-        }
-      }
-    };
+    const event = req.headers['x-github-event'] as WebhookEventName
 
-    const event = req.headers['x-github-event'] as WebhookEventName;
-    const eventPayload = req.body;
-
-    console.log(`Received Github Event: ${event}`);
-    console.log(`Received Github Payload:`, eventPayload);
+    console.log(`Received Github Event: ${event}`)
+    console.log(`Received Github Payload:`, req.body)
 
     try {
-      const handler = eventHandlers[event];
+      const eventHandlers: {
+        [key in WebhookEventName]?: (event: any) => void
+      } = {
+        installation: (event: InstallationEvent) => {
+          const { action } = event
+
+          if (action === 'created') {
+            GithubEventsController.installationCreated(event, res)
+          } else if (action === 'deleted') {
+            GithubEventsController.installationDeleted(event, res)
+          } else {
+            res.sendStatus(200)
+          }
+        },
+        check_run: (event: CheckRunEvent) => {
+          const { action } = event
+
+          if (action === 'rerequested') {
+            GithubEventsController.checkRunRerequested(event, res)
+          } else if (action === 'requested_action') {
+            if (event.requested_action?.identifier === 'unfreeze_pr') {
+              GithubEventsController.unfreezeSinglePRAction(event, res)
+            }
+          } else {
+            res.sendStatus(200)
+          }
+        },
+        check_suite: (event: CheckSuiteEvent) => {
+          const { action } = event
+
+          if (action === 'rerequested') {
+            GithubEventsController.checkSuiteRerequested(event, res)
+          } else if (action === 'requested') {
+            GithubEventsController.checkSuiteRequested(event, res)
+          } else {
+            res.sendStatus(200)
+          }
+        },
+        pull_request: (event: PullRequestEvent) => {
+          const { action } = event
+
+          if (
+            action === 'opened' ||
+            action === 'reopened' ||
+            action === 'synchronize'
+          ) {
+            GithubEventsController.pullRequestSync(event, res)
+          } else {
+            res.sendStatus(200)
+          }
+        },
+      }
+
+      const handler = eventHandlers[event]
+
       if (handler) {
-        handler(eventPayload);
+        handler(req.body)
       } else {
-        res.status(200).send();
+        res.sendStatus(200)
       }
     } catch (e) {
-      next(e);
+      next(e)
     }
   }
 )

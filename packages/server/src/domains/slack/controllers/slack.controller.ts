@@ -13,11 +13,11 @@ import {
   saveSlackIntegration,
 } from '../use-cases'
 import { buildMergeFrozenMessage } from '../utils/slack-messages/build-merge-frozen-message'
-import { MergeFreezeModalSubmissionValuesDTO } from '../interfaces/dtos/merge-freeze-modal-submission.dto'
+import { MergeFreezeModalSubmissionValuesDTO } from '../use-cases/dtos/merge-freeze-modal-submission.dto'
 import { RequestHandler } from 'express'
-import { slackApi } from '../data-access'
+import { slackApi } from '../data'
 import { buildMergeUnfreezeMessage } from '../utils/slack-messages/build-merge-unfrozen-message'
-import { UnfreezeSinglePRModalSubmissionDTO } from '../interfaces/dtos/unfreeze-pr-modal-submission.dto'
+import { UnfreezeSinglePRModalSubmissionDTO } from '../use-cases/dtos/unfreeze-pr-modal-submission.dto'
 import { buildUnfreezeSinglePRMessage } from '../utils/slack-messages/build-unfreeze-single-pr.message'
 import { IncomingMessage, ServerResponse } from 'http'
 import passport from 'passport'
@@ -217,18 +217,7 @@ const slackInstallationCallback = (
 }
 
 const installSlack: RequestHandler = async (req, res) => {
-  res.redirect(
-    await slackApi.getInstallationUrl([
-      'channels:read',
-      'chat:write',
-      'commands',
-      'groups:read',
-      'im:history',
-      'incoming-webhook',
-      'users:read',
-      'channels:join',
-    ])
-  )
+  res.redirect(await slackApi.getInstallationUrl())
 }
 
 export default {

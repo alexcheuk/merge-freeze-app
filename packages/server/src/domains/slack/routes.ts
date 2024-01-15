@@ -29,7 +29,7 @@ app.event('*', async ({ event }) => {
   console.log(event.type || '')
 })
 
-router.get('/slack/install', Controller.installSlack)
+router.get('/auth/slack/install', Controller.installSlack)
 router.use('/', receiver.app)
 
 export default router

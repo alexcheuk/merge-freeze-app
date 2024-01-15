@@ -1,10 +1,10 @@
-import { InstallationDb } from '../../installation/interfaces/data-access/installation-db'
-import { SlackAPI } from '../interfaces/data-access/slack.api'
-import { SaveSlackIntegrationDTO } from '../interfaces/dtos/save-slack-integration.dto'
+import { InstallationDb } from '../../installation/data/installation.db.interface'
+import { SlackDb } from '../data/slack.db.interface'
+import { SaveSlackIntegrationDTO } from './dtos/save-slack-integration.dto'
 
 interface Dependency {
   installationDb: InstallationDb
-  slackAPI: SlackAPI
+  slackAPI: SlackDb
 }
 
 const buildBotWelcomeMessage = ({

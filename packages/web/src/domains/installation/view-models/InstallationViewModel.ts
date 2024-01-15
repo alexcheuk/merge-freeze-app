@@ -45,7 +45,9 @@ export const useInstallationViewModel = () => {
   const getInstallation = () => {
     return InstallationModel.getInstallation()
       .then((res) => res.data)
-      .then((installation) => new InstallationViewModel(installation))
+      .then((installation) => {
+        return new InstallationViewModel(installation)
+      })
   }
 
   const deleteInstallation = () => {

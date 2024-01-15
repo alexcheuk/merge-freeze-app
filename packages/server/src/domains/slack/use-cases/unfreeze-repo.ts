@@ -1,11 +1,8 @@
 import { makeGithubApi } from '../../github/data-access/github.api'
 import { InstallationDb } from '../../installation/interfaces/data-access/installation-db'
-import { MergeFreezeStatusDb } from '../../merge-freeze-status/interfaces/data-access/merge-freeze-status-db'
-import {
-  UnfreezeRepoDTO,
-  UnfreezeRepoOptions,
-} from '../interfaces/dtos/unfreeze-repo.dto'
-import { buildUnfrozenGithubCheck } from '../utils/slack-messages/build-unfrozen-github-check'
+import { MergeFreezeStatusDb } from '../../merge-freeze-status/data/merge-freeze-status.db.interface'
+import { UnfreezeRepoDTO, UnfreezeRepoOptions } from './dtos/unfreeze-repo.dto'
+import { buildUnfrozenGithubCheck } from '../../github/utils/build-unfrozen-github-check'
 
 interface Dependency {
   mergeFreezeStatusDb: MergeFreezeStatusDb

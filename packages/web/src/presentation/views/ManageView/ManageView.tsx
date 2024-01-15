@@ -64,7 +64,7 @@ export const ManageView = () => {
 
       <Button
         as={Link}
-        href='/slack/install'
+        href='/auth/slack/install'
         color='primary'
         disabled={!isMissingSlackIntegration}
       >

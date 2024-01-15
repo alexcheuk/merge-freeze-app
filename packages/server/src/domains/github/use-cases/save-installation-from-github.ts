@@ -1,4 +1,4 @@
-import { InstallationDb } from '../../installation/interfaces/data-access/installation-db'
+import { InstallationDb } from '../../installation/data/installation.db.interface'
 
 interface Dependency {
   installationDb: InstallationDb

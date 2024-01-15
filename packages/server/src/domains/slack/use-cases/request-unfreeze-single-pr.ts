@@ -1,5 +1,5 @@
-import { InstallationDb } from '../../installation/interfaces/data-access/installation-db'
-import { RequestUnfreezeSinglePRDTO } from '../interfaces/dtos/request-unfreeze-single-pr.dto'
+import { InstallationDb } from '../../installation/data/installation.db.interface'
+import { RequestUnfreezeSinglePRDTO } from './dtos/request-unfreeze-single-pr.dto'
 import { buildUndreezePRModal } from '../utils/slack-messages/build-unfreeze-pr-modal'
 
 interface Dependencies {

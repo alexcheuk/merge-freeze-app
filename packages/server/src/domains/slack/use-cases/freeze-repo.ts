@@ -1,11 +1,8 @@
 import { makeGithubApi } from '../../github/data-access/github.api'
-import { InstallationDb } from '../../installation/interfaces/data-access/installation-db'
-import { MergeFreezeStatusDb } from '../../merge-freeze-status/interfaces/data-access/merge-freeze-status-db'
-import {
-  FreezeRepoDTO,
-  FreezeRepoOptions,
-} from '../interfaces/dtos/freeze-repo.dto'
-import { buildFrozenGithubCheck } from '../utils/slack-messages/build-frozen-github-check'
+import { MergeFreezeStatusDb } from '../../merge-freeze-status/data/merge-freeze-status.db.interface'
+import { FreezeRepoDTO, FreezeRepoOptions } from './dtos/freeze-repo.dto'
+import { buildFrozenGithubCheck } from '../../github/utils/build-frozen-github-check'
+import { InstallationDb } from '../../installation/data/installation.db.interface'
 
 interface Dependency {
   mergeFreezeStatusDb: MergeFreezeStatusDb
@@ -26,7 +23,11 @@ export const makeFreezeRepo = ({
 
     const githubInstallationId = installationId
       ? installationId
-      : (await installationDb.getInstallationBySlackTeamId(slackTeamId))?.id
+      : (await installationDb.getInstallationBySlackTeamId(slackTeamId))
+          ?.githubInstallationId
+
+    if (!githubInstallationId)
+      throw new Error('Github installation ID not found')
 
     asyncTasks.push(
       mergeFreezeStatusDb.freeze({
@@ -36,7 +37,6 @@ export const makeFreezeRepo = ({
         id: requesterId,
         name: requesterName,
         reason,
-        metadata: null,
       })
     )
 
