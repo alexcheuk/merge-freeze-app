@@ -16,86 +16,57 @@ router.post(
   '/github/events',
   verifyGithubPayload,
   async (req: Request, res: Response, next: NextFunction) => {
-    const event = req.headers['x-github-event'] as WebhookEventName
+    const eventHandlers = {
+      'installation': (eventPayload) => {
+        const { action } = eventPayload;
+        if (action === 'created') {
+          GithubEventsController.installationCreated(eventPayload, res);
+        } else if (action === 'deleted') {
+          GithubEventsController.installationDeleted(eventPayload, res);
+        }
+      },
+      'installation_repositories': () => {
+        res.sendStatus(200);
+      },
+      'check_run': (eventPayload) => {
+        const { action, requested_action } = eventPayload;
+        if (action === 'rerequested') {
+          GithubEventsController.checkRunRerequested(eventPayload, res);
+        } else if (action === 'requested_action' && requested_action?.identifier === 'unfreeze_pr') {
+          GithubEventsController.unfreezeSinglePRAction(eventPayload, res);
+        }
+      },
+      'check_suite': (eventPayload) => {
+        const { action } = eventPayload;
+        if (action === 'rerequested') {
+          GithubEventsController.checkSuiteRerequested(eventPayload, res);
+        } else if (action === 'requested') {
+          GithubEventsController.checkSuiteRequested(eventPayload, res);
+        }
+      },
+      'pull_request': (eventPayload) => {
+        const { action } = eventPayload;
+        if (['opened', 'reopened', 'synchronize'].includes(action)) {
+          GithubEventsController.pullRequestSync(eventPayload, res);
+        }
+      }
+    };
 
-    console.log(`Received Github Event: ${event}`)
-    console.log(`Received Github Payload:`, req.body)
+    const event = req.headers['x-github-event'] as WebhookEventName;
+    const eventPayload = req.body;
+
+    console.log(`Received Github Event: ${event}`);
+    console.log(`Received Github Payload:`, eventPayload);
 
     try {
-      switch (event) {
-        case 'installation':
-          const installationEvent: InstallationEvent = req.body
-
-          switch (installationEvent.action) {
-            case 'created':
-              GithubEventsController.installationCreated(installationEvent, res)
-              break
-            case 'deleted':
-              GithubEventsController.installationDeleted(installationEvent, res)
-              break
-            default:
-              return res.status(200).send()
-          }
-
-        case 'installation_repositories':
-          // const repoEvent: InstallationRepositoriesEvent = req.body
-          return res.sendStatus(200)
-
-        case 'check_run':
-          const checkRunEvent: CheckRunEvent = req.body
-
-          switch (checkRunEvent.action) {
-            case 'rerequested':
-              GithubEventsController.checkRunRerequested(checkRunEvent, res)
-              break
-            case 'requested_action':
-              if (
-                checkRunEvent.requested_action?.identifier === 'unfreeze_pr'
-              ) {
-                GithubEventsController.unfreezeSinglePRAction(
-                  checkRunEvent,
-                  res
-                )
-              }
-              break
-            default:
-              return res.sendStatus(200)
-          }
-
-        case 'check_suite':
-          const checkSuiteEvent: CheckSuiteEvent = req.body
-
-          switch (checkSuiteEvent.action) {
-            case 'rerequested':
-              GithubEventsController.checkSuiteRerequested(checkSuiteEvent, res)
-              break
-            case 'requested':
-              GithubEventsController.checkSuiteRequested(checkSuiteEvent, res)
-              break
-            default:
-              return res.sendStatus(200)
-          }
-
-        case 'pull_request':
-          const pullRequestEvent: PullRequestEvent = req.body
-
-          if (
-            pullRequestEvent.action === 'opened' ||
-            pullRequestEvent.action === 'reopened' ||
-            pullRequestEvent.action === 'synchronize'
-          ) {
-            GithubEventsController.pullRequestSync(pullRequestEvent, res)
-
-            return res.sendStatus(200)
-          }
-
-          return res.status(200).send()
-
-        default:
-          return res.status(200).send()
+      const handler = eventHandlers[event];
+      if (handler) {
+        handler(eventPayload);
+      } else {
+        res.status(200).send();
       }
     } catch (e) {
-      next(e)
+      next(e);
     }
   }
 )
