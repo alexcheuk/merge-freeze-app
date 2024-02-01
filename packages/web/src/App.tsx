@@ -1,10 +1,10 @@
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom'
-import { LandingPage } from './presentation/pages/LandingPage'
-import { AppLayout } from './presentation/components/AppLayout'
-import { ManagePage } from './presentation/pages/ManagePage'
-import { AuthProvider } from './presentation/providers/AuthProvider'
-import { QueryClientProvider } from './presentation/providers/QueryClient'
-import { ProtectedRoute } from './presentation/components/ProtectedRoute'
+import { LandingPage } from './core/pages/LandingPage'
+import { AppLayout } from './core/components/AppLayout'
+import { ManagePage } from './core/pages/ManagePage'
+import { AuthProvider } from './core/providers/AuthProvider'
+import { QueryClientProvider } from './core/providers/QueryClientProvider'
+import { ProtectedRoute } from './core/components/ProtectedRoute'
 
 const router = createBrowserRouter([
   {

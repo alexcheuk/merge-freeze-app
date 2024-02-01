@@ -6,15 +6,19 @@
   "scripts": {
     "dev": "npx nx run-many --target=dev --all",
     "build": "pnpm run -r build",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest",
     "tsc": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@faker-js/faker": "^8.4.0",
+    "factory.ts": "^1.4.1",
     "nx": "^17.2.8",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2",
+    "vitest-mock-express": "^2.0.3"
   }
 }

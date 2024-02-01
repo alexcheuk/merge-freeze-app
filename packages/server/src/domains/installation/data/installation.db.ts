@@ -14,14 +14,12 @@ export const makeInstallationDb = ({
       githubInstallationId,
       repos
     ) => {
-      const res = await InstallationModel.findOneAndUpdate(
+      await InstallationModel.findOneAndUpdate(
         {
           githubUserId,
         },
         { githubUserId, githubInstallationId, installedRepos: repos }
       )
-
-      console.log({ res })
     },
     upsertSlackIntegration: async (githubUserId, slackIntegrationData) => {
       await InstallationModel.findOneAndUpdate(
@@ -53,6 +51,16 @@ export const makeInstallationDb = ({
       await InstallationModel.deleteMany({
         githubUserId,
       })
+    },
+    updateAllowedChannels: async (githubInstallationId, allowedChannels) => {
+      await InstallationModel.findOneAndUpdate(
+        {
+          githubInstallationId,
+        },
+        {
+          allowedChannels,
+        }
+      )
     },
   }
 }

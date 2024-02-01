@@ -1,4 +1,4 @@
-export interface MergeFreezeStatusData {
+export interface MergeFreezeStatusConstructor {
   repoOwner: string
   repoName: string
   source: string
@@ -10,9 +10,9 @@ export interface MergeFreezeStatusData {
 }
 
 export class MergeFreezeStatus {
-  _data: MergeFreezeStatusData
+  _data: MergeFreezeStatusConstructor
 
-  constructor(data: MergeFreezeStatusData) {
+  constructor(data: MergeFreezeStatusConstructor) {
     this._data = data
   }
 

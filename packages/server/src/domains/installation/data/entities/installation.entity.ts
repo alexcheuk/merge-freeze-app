@@ -5,7 +5,7 @@ export interface InstallationRepo {
   repo: string
 }
 
-export interface InstallationData {
+export interface InstallationConstructor {
   githubUserId?: number
   githubInstallationId?: number
   slackTeamId?: string
@@ -19,14 +19,14 @@ export interface InstallationData {
 }
 
 export class Installation {
-  githubUserId: InstallationData['githubUserId']
-  githubInstallationId: InstallationData['githubInstallationId']
-  slackTeamId: InstallationData['slackTeamId']
-  slackInstallation: InstallationData['slackInstallation']
-  installedRepos: InstallationData['installedRepos']
-  configuration: InstallationData['configuration']
+  githubUserId: InstallationConstructor['githubUserId']
+  githubInstallationId: InstallationConstructor['githubInstallationId']
+  slackTeamId: InstallationConstructor['slackTeamId']
+  slackInstallation: InstallationConstructor['slackInstallation']
+  installedRepos: InstallationConstructor['installedRepos']
+  configuration: InstallationConstructor['configuration']
 
-  constructor(data: InstallationData) {
+  constructor(data: InstallationConstructor) {
     this.githubInstallationId = data.githubInstallationId
     this.githubUserId = data.githubUserId
     this.slackTeamId = data.slackTeamId
@@ -37,5 +37,13 @@ export class Installation {
 
   get isInstallationComplete() {
     return !!(this.githubInstallationId && this.slackInstallation)
+  }
+
+  get canUninstallFromGithub() {
+    return !!(this.githubInstallationId && this?.installedRepos?.length)
+  }
+
+  get canUninstallFromSlack() {
+    return !!this.slackInstallation?.bot?.token
   }
 }

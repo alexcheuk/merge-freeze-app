@@ -1,8 +1,8 @@
-import { UseCase } from '../../../shared/interfaces/use-case'
 import { makeGithubApi } from '../../github/data-access/github.api'
-import { InstallationDb } from '../../installation/interfaces/data-access/installation-db'
 import { slackApi } from '../../slack/data'
 import { SlackDb } from '../../slack/data/slack.db.interface'
+import { InstallationDb } from '../data/installation.db.interface'
+import { IUninstallUseCase } from '../interfaces/use-cases/IUninstallUseCase'
 
 interface Dependency {
   slackApi: SlackDb
@@ -10,15 +10,9 @@ interface Dependency {
   makeGithubDb: typeof makeGithubApi
 }
 
-export interface UninstallInput {
-  githubUserId: number
-}
-
-export type UninstallOutput = void
-
 export const makeUninstall = ({
   installationDb,
-}: Dependency): UseCase<UninstallInput, UninstallOutput> => {
+}: Dependency): IUninstallUseCase => {
   return async ({ githubUserId }) => {
     try {
       const installation = await installationDb.getInstallationByGithubUserId(
@@ -30,21 +24,18 @@ export const makeUninstall = ({
       /**
        * Uninstall Slack app integration
        */
-      if (installation.slackInstallation?.bot?.token)
+      if (installation.canUninstallFromSlack)
         await slackApi.uninstall({
-          token: installation.slackInstallation.bot.token,
+          token: installation?.slackInstallation?.bot?.token,
         })
 
       /**
        * Uninstall Github app integrations on all installed repos
        */
-      if (
-        installation.githubInstallationId &&
-        installation?.installedRepos?.length
-      ) {
-        for (let i = 0; i < installation?.installedRepos?.length; i++) {
+      if (installation.canUninstallFromGithub) {
+        for (let i = 0; i < installation!.installedRepos!.length; i++) {
           const gh = await makeGithubApi({
-            installationId: installation.githubInstallationId,
+            installationId: installation.githubInstallationId as number,
             owner: '',
             repo: '',
           })

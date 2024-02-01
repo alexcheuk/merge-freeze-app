@@ -7,13 +7,19 @@ import {
 import { Router } from 'express'
 import { app, receiver } from './configs/slack-bolt.app'
 import { isAllowedChannel } from './middlewares/is-allowed-channel.middleware'
+import { getInstallation } from './middlewares/get-installation.middleware'
 
 const router = Router()
 
 // Handle interactive slack commands
-app.command('/mf', isAllowedChannel, Controller.mergeFreeze)
-app.command('/!mf', isAllowedChannel, Controller.mergeUnfreeze)
-app.command('/!mfpr', isAllowedChannel, Controller.mergeUnfreezeSinglePR)
+app.command('/mf', getInstallation, isAllowedChannel, Controller.mergeFreeze)
+app.command('/!mf', getInstallation, isAllowedChannel, Controller.mergeUnfreeze)
+app.command(
+  '/!mfpr',
+  getInstallation,
+  isAllowedChannel,
+  Controller.mergeUnfreezeSinglePR
+)
 
 // Handle interactive slack view events
 app.view(

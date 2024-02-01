@@ -15,21 +15,14 @@ export interface InstallationModelSchema {
   slackTeamId?: string
   slackInstallation?: SlackInstallation<'v2'>
   installedRepos?: InstallationInstalledRepoModel[]
-  configuration?: {
-    allowedChannels?: string[]
-    mergeFreezeTemplate?: string
-    mergeUnfreezeTemplate?: string
-  }
+  allowedChannels?: string[]
+  mergeFreezeTemplate?: string
+  mergeUnfreezeTemplate?: string
 }
 
 const repoSchema = new Schema<InstallationInstalledRepoModel>({
   owner: String,
   repo: String,
-})
-const configurationSchema = new Schema<
-  InstallationModelSchema['configuration']
->({
-  allowedChannels: [String],
 })
 
 const installationModelSchema = new Schema<InstallationModelSchema>({
@@ -38,7 +31,9 @@ const installationModelSchema = new Schema<InstallationModelSchema>({
   slackTeamId: String,
   slackInstallation: Object,
   installedRepos: [repoSchema],
-  configuration: configurationSchema,
+  allowedChannels: [String],
+  mergeFreezeTemplate: String,
+  mergeUnfreezeTemplate: String,
 })
 
 const InstallationMongooseModel = mongoose.model(
@@ -52,7 +47,6 @@ const mapResultToEntity = (
   if (!res) return null
 
   return new Installation({
-    configuration: res.configuration,
     githubInstallationId: res.githubInstallationId,
     githubUserId: res.githubUserId,
     installedRepos: res.installedRepos,
@@ -60,6 +54,11 @@ const mapResultToEntity = (
       ? new SlackInstallationEntity(res.slackInstallation)
       : undefined,
     slackTeamId: res.slackTeamId,
+    configuration: {
+      allowedChannels: res.allowedChannels,
+      mergeFreezeTemplate: res.mergeFreezeTemplate,
+      mergeUnfreezeTemplate: res.mergeUnfreezeTemplate,
+    },
   })
 }
 

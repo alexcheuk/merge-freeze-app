@@ -88,6 +88,7 @@ const mergeUnfreeze: Middleware<SlackCommandMiddlewareArgs> = async ({
   client,
   respond,
 }) => {
+  console.log(body)
   try {
     await ack()
 

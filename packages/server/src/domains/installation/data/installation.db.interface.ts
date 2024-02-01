@@ -16,7 +16,7 @@ export interface InstallationDb {
   ) => Promise<void>
 
   getInstallationByGithubInstallationId: (
-    githubUserId: Installation['githubInstallationId']
+    githubInstallationId: Installation['githubInstallationId']
   ) => Promise<Installation | null>
 
   getInstallationByGithubUserId: (
@@ -29,5 +29,10 @@ export interface InstallationDb {
 
   deleteAllInstallationByGithubUserId: (
     githubUserId: Installation['githubUserId']
+  ) => Promise<void>
+
+  updateAllowedChannels: (
+    githubInstallationId: Installation['githubInstallationId'],
+    allowedChannels: string[]
   ) => Promise<void>
 }
