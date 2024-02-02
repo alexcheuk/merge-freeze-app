@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose'
 import { Installation as SlackInstallation } from '@slack/bolt'
-import { InstallationModel as IInstallationModel } from './installation.model.interface'
+import { IInstallationModel as IInstallationModel } from '../../interfaces/models/IInstallationModel'
 import { Installation } from '../entities/installation.entity'
 import { SlackInstallation as SlackInstallationEntity } from '../../../slack/data/entities/slack-installation.entity'
 

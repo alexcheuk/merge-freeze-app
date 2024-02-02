@@ -1,6 +1,6 @@
 import { GistDB, GistDBSchema } from '../../../../infrastructure/db/gist'
 import { Installation } from '../entities/installation.entity'
-import { InstallationModel as IInstallationModel } from './installation.model.interface'
+import { IInstallationModel as IInstallationModel } from '../../interfaces/models/IInstallationModel'
 
 const mapResultToEntity = (res: GistDBSchema): Installation => {
   return new Installation({

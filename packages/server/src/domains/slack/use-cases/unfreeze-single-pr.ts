@@ -2,11 +2,11 @@ import { makeGithubApi } from '../../github/data-access/github.api'
 import { MergeFreezeStatusDb } from '../../merge-freeze-status/data/merge-freeze-status.db.interface'
 import { UnfreezeSinglePRDTO } from './dtos/unfreeze-single-pr.dto'
 import { buildUnfrozenGithubCheck } from '../../github/utils/build-unfrozen-github-check'
-import { InstallationDb } from '../../installation/data/installation.db.interface'
+import { IInstallationDb } from '../../installation/interfaces/data/IInstallationDb'
 
 interface Dependency {
   mergeFreezeStatusDb: MergeFreezeStatusDb
-  installationDb: InstallationDb
+  installationDb: IInstallationDb
   makeGithubDb: typeof makeGithubApi
 }
 

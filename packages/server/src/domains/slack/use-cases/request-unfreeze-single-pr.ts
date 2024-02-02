@@ -1,9 +1,9 @@
-import { InstallationDb } from '../../installation/data/installation.db.interface'
+import { IInstallationDb } from '../../installation/interfaces/data/IInstallationDb'
 import { RequestUnfreezeSinglePRDTO } from './dtos/request-unfreeze-single-pr.dto'
 import { buildUndreezePRModal } from '../utils/slack-messages/build-unfreeze-pr-modal'
 
 interface Dependencies {
-  installationDb: InstallationDb
+  installationDb: IInstallationDb
 }
 
 export const makeRequestUnfreezeSinglePR = ({

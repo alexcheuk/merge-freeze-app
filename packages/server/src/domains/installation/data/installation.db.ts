@@ -1,13 +1,13 @@
-import { InstallationDb } from './installation.db.interface'
-import { InstallationModel } from './models/installation.model.interface'
+import { IInstallationDb } from '../interfaces/data/IInstallationDb'
+import { IInstallationModel } from '../interfaces/models/IInstallationModel'
 
 interface Dependencies {
-  InstallationModel: InstallationModel
+  InstallationModel: IInstallationModel
 }
 
 export const makeInstallationDb = ({
   InstallationModel,
-}: Dependencies): InstallationDb => {
+}: Dependencies): IInstallationDb => {
   return {
     upsertGithubInstallation: async (
       githubUserId,
@@ -59,6 +59,16 @@ export const makeInstallationDb = ({
         },
         {
           allowedChannels,
+        }
+      )
+    },
+    updateInstalledRepos: async (githubInstallationId, repos = []) => {
+      await InstallationModel.findOneAndUpdate(
+        {
+          githubInstallationId,
+        },
+        {
+          installedRepos: repos,
         }
       )
     },

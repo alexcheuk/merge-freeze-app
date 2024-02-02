@@ -1,14 +1,14 @@
 import { expect, test, vi } from 'vitest'
 import { makeSaveInstallationFromGithub } from '../save-installation-from-github'
-import { InstallationDb } from '../../../../installation/data/installation.db.interface'
+import { IInstallationDb } from '../../../../installation/interfaces/data/IInstallationDb'
 
 test('Use Case: saveInstallationFromGithub', async () => {
-  const mockInstallationDb: Partial<InstallationDb> = {
+  const mockInstallationDb: Partial<IInstallationDb> = {
     upsertGithubInstallation: vi.fn(),
   }
 
   const useCase = makeSaveInstallationFromGithub({
-    installationDb: mockInstallationDb as InstallationDb,
+    installationDb: mockInstallationDb as IInstallationDb,
   })
 
   await useCase({

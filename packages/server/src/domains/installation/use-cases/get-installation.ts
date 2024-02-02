@@ -1,10 +1,10 @@
 import { UseCase } from '../../../shared/interfaces/use-case'
-import { InstallationDb } from '../data/installation.db.interface'
+import { IInstallationDb } from '../interfaces/data/IInstallationDb'
 import { InstallationDTO } from './dtos/installation.dto'
 import { mapInstallationEntityToDTO } from './dtos/installation.mappers'
 
 interface Dependency {
-  installationDb: InstallationDb
+  installationDb: IInstallationDb
 }
 
 export interface GetInstallationByGithubUserIdInput {

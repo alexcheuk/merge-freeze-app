@@ -1,11 +1,11 @@
 import { FilterQuery, Mongoose, UpdateQuery } from 'mongoose'
-import { Installation } from '../entities/installation.entity'
-import { InstallationModelSchema } from './installation.model'
+import { Installation } from '../../data/entities/installation.entity'
+import { InstallationModelSchema } from '../../data/models/installation.model'
 
 type QueryFilter = FilterQuery<InstallationModelSchema>
 type QueryUpdate = UpdateQuery<InstallationModelSchema>
 
-export interface InstallationModel {
+export interface IInstallationModel {
   findOneAndUpdate: (
     filter: QueryFilter,
     update: QueryUpdate

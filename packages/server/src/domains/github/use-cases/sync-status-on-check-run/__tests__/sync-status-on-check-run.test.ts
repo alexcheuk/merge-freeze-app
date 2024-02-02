@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { InstallationDb } from '../../../../installation/data/installation.db.interface'
+import { IInstallationDb } from '../../../../installation/interfaces/data/IInstallationDb'
 import { makeSyncStatusOnCheckRun } from '../sync-status-on-check-run'
 import { GithubAPI } from '../../../data-access/github.api'
 import { MergeFreezeStatusDb } from '../../../../merge-freeze-status/data/merge-freeze-status.db.interface'
@@ -12,7 +12,7 @@ describe('Use Case: syncStatusOnCheckRun', () => {
   it('should execute if installation is found', async () => {
     let installationStub
 
-    const mockInstallationDb: Partial<InstallationDb> = {
+    const mockInstallationDb: Partial<IInstallationDb> = {
       getInstallationByGithubInstallationId: vi.fn(
         async (githubInstallationId) =>
           (installationStub = new Installation(
@@ -37,7 +37,7 @@ describe('Use Case: syncStatusOnCheckRun', () => {
     const mockMakeGithubDb: GithubAPI = () => mockGithubApi
 
     const useCase = makeSyncStatusOnCheckRun({
-      installationDb: mockInstallationDb as InstallationDb,
+      installationDb: mockInstallationDb as IInstallationDb,
       makeGithubDb: mockMakeGithubDb,
       mergeFreezeStatusDb: mockMergeFreezeStatusDb as MergeFreezeStatusDb,
     })
@@ -64,7 +64,7 @@ describe('Use Case: syncStatusOnCheckRun', () => {
   })
 
   it('should exit execution if installation is not found', async () => {
-    const mockInstallationDb: Partial<InstallationDb> = {
+    const mockInstallationDb: Partial<IInstallationDb> = {
       getInstallationByGithubInstallationId: vi.fn(async () => null),
     }
 
@@ -79,7 +79,7 @@ describe('Use Case: syncStatusOnCheckRun', () => {
     const mockMakeGithubDb: GithubAPI = () => mockGithubApi
 
     const useCase = makeSyncStatusOnCheckRun({
-      installationDb: mockInstallationDb as InstallationDb,
+      installationDb: mockInstallationDb as IInstallationDb,
       makeGithubDb: mockMakeGithubDb,
       mergeFreezeStatusDb: mockMergeFreezeStatusDb as MergeFreezeStatusDb,
     })

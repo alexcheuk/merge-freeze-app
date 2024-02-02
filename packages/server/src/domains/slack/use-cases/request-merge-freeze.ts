@@ -1,9 +1,9 @@
 import { buildMergeFreezeModal } from '../utils/slack-messages'
 import { RequestMergeFreezeDTO } from './dtos/request-merge-freeze.dto'
-import { InstallationDb } from '../../installation/data/installation.db.interface'
+import { IInstallationDb } from '../../installation/interfaces/data/IInstallationDb'
 
 interface Dependencies {
-  installationDb: InstallationDb
+  installationDb: IInstallationDb
 }
 
 export const makeRequestMergeFreeze = ({ installationDb }: Dependencies) => {

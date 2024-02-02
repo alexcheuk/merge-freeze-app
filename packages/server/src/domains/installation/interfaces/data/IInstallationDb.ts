@@ -1,6 +1,6 @@
-import { Installation } from './entities/installation.entity'
+import { Installation } from '../../data/entities/installation.entity'
 
-export interface InstallationDb {
+export interface IInstallationDb {
   upsertGithubInstallation: (
     githubUserId: number,
     githubInstallationId: number,
@@ -34,5 +34,10 @@ export interface InstallationDb {
   updateAllowedChannels: (
     githubInstallationId: Installation['githubInstallationId'],
     allowedChannels: string[]
+  ) => Promise<void>
+
+  updateInstalledRepos: (
+    githubInstallationId: Installation['githubInstallationId'],
+    repos: Installation['installedRepos']
   ) => Promise<void>
 }

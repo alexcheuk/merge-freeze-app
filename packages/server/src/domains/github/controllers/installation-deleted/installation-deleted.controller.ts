@@ -8,10 +8,14 @@ export const makeInstallationDeletedController = ({
   uninstall: IUninstallUseCase
 }) => {
   return async (event: InstallationEvent, res: Response) => {
-    await uninstall({
-      githubUserId: event.sender.id,
-    })
+    try {
+      await uninstall({
+        githubUserId: event.sender.id,
+      })
 
-    res.sendStatus(200)
+      res.sendStatus(200)
+    } catch (e) {
+      throw e
+    }
   }
 }

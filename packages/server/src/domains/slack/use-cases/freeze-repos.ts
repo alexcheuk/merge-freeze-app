@@ -1,9 +1,9 @@
 import { freezeRepo } from '.'
-import { InstallationDb } from '../../installation/data/installation.db.interface'
+import { IInstallationDb } from '../../installation/interfaces/data/IInstallationDb'
 import { FreezeReposDTO } from './dtos/freeze-repos.dto'
 
 interface Dependency {
-  installationDb: InstallationDb
+  installationDb: IInstallationDb
 }
 
 export const makeFreezeRepos = ({ installationDb }: Dependency) => {

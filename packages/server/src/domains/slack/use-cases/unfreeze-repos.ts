@@ -1,9 +1,9 @@
 import { UnfreezeReposDTO } from './dtos/unfreeze-repos.dto'
 import { unfreezeRepo } from '.'
-import { InstallationDb } from '../../installation/data/installation.db.interface'
+import { IInstallationDb } from '../../installation/interfaces/data/IInstallationDb'
 
 interface Dependency {
-  installationDb: InstallationDb
+  installationDb: IInstallationDb
 }
 
 export const makeUnfreezeRepos = ({ installationDb }: Dependency) => {

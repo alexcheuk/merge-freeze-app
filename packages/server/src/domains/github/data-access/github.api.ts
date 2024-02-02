@@ -127,5 +127,9 @@ export const makeGithubApi = ({
         installation_id: installationId,
       })
     },
+    getInstalledRepos: async () => {
+      return (await octokit.apps.listReposAccessibleToInstallation())?.data
+        .repositories
+    },
   }
 }

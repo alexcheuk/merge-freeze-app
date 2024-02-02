@@ -1,8 +1,8 @@
-import { InstallationDb } from '../../../installation/data/installation.db.interface'
+import { IInstallationDb } from '../../../installation/interfaces/data/IInstallationDb'
 import { ISaveInstallationFromGithubUseCase } from '../../interfaces/use-cases/ISaveInstallationFromGithubUseCase'
 
 interface Dependency {
-  installationDb: InstallationDb
+  installationDb: IInstallationDb
 }
 
 export const makeSaveInstallationFromGithub = ({

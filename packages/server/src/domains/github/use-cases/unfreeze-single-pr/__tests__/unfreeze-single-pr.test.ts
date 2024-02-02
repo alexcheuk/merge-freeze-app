@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { makeUnfreezeSinglePR } from '../unfreeze-single-pr'
 import { InstallationContructorMock } from '../../../../installation/data/entities/mocks/installation.entity.mock'
-import { InstallationDb } from '../../../../installation/data/installation.db.interface'
+import { IInstallationDb } from '../../../../installation/interfaces/data/IInstallationDb'
 import { MergeFreezeStatus } from '../../../../merge-freeze-status/data/entities/merge-freeze-status.entity'
 import { MergeFreezeStatusMock } from '../../../../merge-freeze-status/data/entities/mocks/merge-freeze-status.entity.mock'
 import { MergeFreezeStatusDb } from '../../../../merge-freeze-status/data/merge-freeze-status.db.interface'
@@ -12,7 +12,7 @@ describe('Use Case: unFreezeSinglePR', () => {
   it('should execute if installation is found', async () => {
     let installationStub
 
-    const mockInstallationDb: Partial<InstallationDb> = {
+    const mockInstallationDb: Partial<IInstallationDb> = {
       getInstallationByGithubInstallationId: vi.fn(
         async (githubInstallationId) =>
           (installationStub = new Installation(
@@ -37,7 +37,7 @@ describe('Use Case: unFreezeSinglePR', () => {
     const mockMakeGithubDb: GithubAPI = () => mockGithubApi
 
     const unfreezeSinglePR = makeUnfreezeSinglePR({
-      installationDb: mockInstallationDb as InstallationDb,
+      installationDb: mockInstallationDb as IInstallationDb,
       makeGithubDb: mockMakeGithubDb,
       mergeFreezeStatusDb: mockMergeFreezeStatusDb as MergeFreezeStatusDb,
     })

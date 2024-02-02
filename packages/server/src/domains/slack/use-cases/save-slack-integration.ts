@@ -1,9 +1,9 @@
-import { InstallationDb } from '../../installation/data/installation.db.interface'
+import { IInstallationDb } from '../../installation/interfaces/data/IInstallationDb'
 import { SlackDb } from '../data/slack.db.interface'
 import { SaveSlackIntegrationDTO } from './dtos/save-slack-integration.dto'
 
 interface Dependency {
-  installationDb: InstallationDb
+  installationDb: IInstallationDb
   slackAPI: SlackDb
 }
 

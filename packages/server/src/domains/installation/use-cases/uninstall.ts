@@ -1,12 +1,12 @@
 import { makeGithubApi } from '../../github/data-access/github.api'
 import { slackApi } from '../../slack/data'
 import { SlackDb } from '../../slack/data/slack.db.interface'
-import { InstallationDb } from '../data/installation.db.interface'
+import { IInstallationDb } from '../interfaces/data/IInstallationDb'
 import { IUninstallUseCase } from '../interfaces/use-cases/IUninstallUseCase'
 
 interface Dependency {
   slackApi: SlackDb
-  installationDb: InstallationDb
+  installationDb: IInstallationDb
   makeGithubDb: typeof makeGithubApi
 }
 
@@ -51,7 +51,6 @@ export const makeUninstall = ({
        */
       await installationDb.deleteAllInstallationByGithubUserId(githubUserId)
     } catch (e) {
-      console.log('ERROR', e)
       throw e
     }
   }
