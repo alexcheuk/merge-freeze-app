@@ -1,13 +1,17 @@
-import { MergeFreezeStatusDb } from './merge-freeze-status.db.interface'
-import { MergeFreezeStatusModel } from './models/merge-freeze-status.model.interface'
+import { IInstallationDb } from '../../installation/interfaces/data/IInstallationDb'
+import { IMergeFreezeStatusDb } from '../interfaces/data-access/IMergeFreezeStatusDb'
+import { IMergeFreezeStatusModel } from '../interfaces/models/IMergeFreezeStatusModel'
+import { MergeFreezeStatus } from './entities/merge-freeze-status.entity'
 
 interface Dependencies {
-  MergeFreezeStatusModel: MergeFreezeStatusModel
+  MergeFreezeStatusModel: IMergeFreezeStatusModel
+  InstallationDb: IInstallationDb
 }
 
 export const makeMergeFreezeStatusDb = ({
   MergeFreezeStatusModel,
-}: Dependencies): MergeFreezeStatusDb => {
+  InstallationDb,
+}: Dependencies): IMergeFreezeStatusDb => {
   return {
     freeze: async ({ owner, repo, source, id, name, reason }) => {
       await MergeFreezeStatusModel.create({
@@ -40,6 +44,35 @@ export const makeMergeFreezeStatusDb = ({
       })
 
       return doc
+    },
+    getAllRepoStatusesByGithubId: async (githubUserId) => {
+      const installation = await InstallationDb.getInstallationByGithubUserId(
+        githubUserId
+      )
+
+      if (!installation) throw new Error()
+
+      const repos = installation.installedRepos || []
+
+      const statusPromises: Promise<MergeFreezeStatus | null>[] = []
+      const repoStatusMap: { [repo: string]: MergeFreezeStatus | null } = {}
+
+      repos.forEach((repo) => {
+        statusPromises.push(
+          MergeFreezeStatusModel.findOne({
+            repoOwner: repo.owner,
+            repoName: repo.repo,
+          }).then((status) => {
+            repoStatusMap[`${repo.owner}/${repo.repo}`] = status
+
+            return status
+          })
+        )
+      })
+
+      await Promise.all(statusPromises)
+
+      return repoStatusMap
     },
   }
 }

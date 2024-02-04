@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
-import { MergeFreezeStatusModel as IMergeFreezeStatusModel } from './merge-freeze-status.model.interface'
+import { IMergeFreezeStatusModel as IMergeFreezeStatusModel } from '../../interfaces/models/IMergeFreezeStatusModel'
 import { MergeFreezeStatus } from '../entities/merge-freeze-status.entity'
 
 export interface MergeFreezeStatusSchema {
@@ -53,6 +53,10 @@ export const MergeFreezeStatusModel: IMergeFreezeStatusModel = {
       datetime: -1,
     })
 
-    return mapResultToEntity(res as MergeFreezeStatusSchema)
+    if (res) {
+      return mapResultToEntity(res)
+    } else {
+      return null
+    }
   },
 }

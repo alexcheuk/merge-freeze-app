@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { IInstallationDb } from '../../../../installation/interfaces/data/IInstallationDb'
 import { makeSyncStatusOnCheckRun } from '../sync-status-on-check-run'
 import { GithubAPI } from '../../../data-access/github.api'
-import { MergeFreezeStatusDb } from '../../../../merge-freeze-status/data/merge-freeze-status.db.interface'
+import { IMergeFreezeStatusDb } from '../../../../merge-freeze-status/interfaces/data-access/IMergeFreezeStatusDb'
 import { Installation } from '../../../../installation/data/entities/installation.entity'
 import { InstallationContructorMock } from '../../../../installation/data/entities/mocks/installation.entity.mock'
 import { MergeFreezeStatus } from '../../../../merge-freeze-status/data/entities/merge-freeze-status.entity'
@@ -26,7 +26,7 @@ describe('Use Case: syncStatusOnCheckRun', () => {
     const mergeFreezeStatusStub = new MergeFreezeStatus(
       MergeFreezeStatusMock.build()
     )
-    const mockMergeFreezeStatusDb: Partial<MergeFreezeStatusDb> = {
+    const mockMergeFreezeStatusDb: Partial<IMergeFreezeStatusDb> = {
       getLatestStatus: vi.fn(async () => mergeFreezeStatusStub),
     }
 
@@ -39,7 +39,7 @@ describe('Use Case: syncStatusOnCheckRun', () => {
     const useCase = makeSyncStatusOnCheckRun({
       installationDb: mockInstallationDb as IInstallationDb,
       makeGithubDb: mockMakeGithubDb,
-      mergeFreezeStatusDb: mockMergeFreezeStatusDb as MergeFreezeStatusDb,
+      mergeFreezeStatusDb: mockMergeFreezeStatusDb as IMergeFreezeStatusDb,
     })
 
     await useCase({
@@ -68,7 +68,7 @@ describe('Use Case: syncStatusOnCheckRun', () => {
       getInstallationByGithubInstallationId: vi.fn(async () => null),
     }
 
-    const mockMergeFreezeStatusDb: Partial<MergeFreezeStatusDb> = {
+    const mockMergeFreezeStatusDb: Partial<IMergeFreezeStatusDb> = {
       getLatestStatus: vi.fn(),
     }
 
@@ -81,7 +81,7 @@ describe('Use Case: syncStatusOnCheckRun', () => {
     const useCase = makeSyncStatusOnCheckRun({
       installationDb: mockInstallationDb as IInstallationDb,
       makeGithubDb: mockMakeGithubDb,
-      mergeFreezeStatusDb: mockMergeFreezeStatusDb as MergeFreezeStatusDb,
+      mergeFreezeStatusDb: mockMergeFreezeStatusDb as IMergeFreezeStatusDb,
     })
 
     expect(async () => {

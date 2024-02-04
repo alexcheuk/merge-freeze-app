@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
 import { makeEventsController } from '../events.controller'
-import { Request, Response } from 'express'
 
 describe('Github Event Controller', () => {
   it('should route events to proper controllers', async () => {

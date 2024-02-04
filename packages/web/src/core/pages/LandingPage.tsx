@@ -2,21 +2,32 @@ import { Button, Link } from '@nextui-org/react'
 
 export const LandingPage = () => {
   return (
-    <section className='flex flex-col items-center justify-center h-[calc(60vh)] 2xl:h-[calc(84vh)]'>
-      <div className=''>
-        <section className='text-center px-8 mt-20 sm:mt-32 md:mt-40'>
-          <h1 className='text-slate-900 font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight text-center dark:text-white'>
+    <section className='flex items-center justify-center'>
+      <div className='grow bg-gray-900 min-h-screen flex items-center'>
+        <section className='text-right p-20'>
+          <h1 className='text-white font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight  dark:text-white'>
             Effortlessly safeguard your codebase
           </h1>
-          <p className='mt-6 text-lg text-slate-600 text-center max-w-3xl mx-auto dark:text-slate-400'>
+          <p className='mt-6 text-lg text-slate-500 dark:text-slate-400'>
             Instantly safeguard your codebase during critical moments, ensuring
             a stable and secure environment for your software development.
           </p>
-          <div className='mt-6 sm:mt-10 flex justify-center space-x-6 text-sm'>
+        </section>
+      </div>
+
+      <div className='shrink min-w-max min-h-screen'>
+        <div className='min-h-screen flex items-center'>
+          <section className='p-20'>
+            <h1 className='text-slate-700 font-extrabold text-4xl tracking-tight dark:text-white'>
+              Sign in with Github
+            </h1>
+
             <Button
               as={Link}
               href='/auth/github'
               color='primary'
+              className='mt-6'
+              fullWidth
               startContent={
                 <svg
                   height='24'
@@ -37,8 +48,8 @@ export const LandingPage = () => {
             >
               Get started
             </Button>
-          </div>
-        </section>
+          </section>
+        </div>
       </div>
     </section>
   )

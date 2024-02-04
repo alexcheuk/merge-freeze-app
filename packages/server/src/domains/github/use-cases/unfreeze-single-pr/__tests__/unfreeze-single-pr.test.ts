@@ -4,7 +4,7 @@ import { InstallationContructorMock } from '../../../../installation/data/entiti
 import { IInstallationDb } from '../../../../installation/interfaces/data/IInstallationDb'
 import { MergeFreezeStatus } from '../../../../merge-freeze-status/data/entities/merge-freeze-status.entity'
 import { MergeFreezeStatusMock } from '../../../../merge-freeze-status/data/entities/mocks/merge-freeze-status.entity.mock'
-import { MergeFreezeStatusDb } from '../../../../merge-freeze-status/data/merge-freeze-status.db.interface'
+import { IMergeFreezeStatusDb } from '../../../../merge-freeze-status/interfaces/data-access/IMergeFreezeStatusDb'
 import { GithubAPI } from '../../../data-access/github.api'
 import { Installation } from '../../../../installation/data/entities/installation.entity'
 
@@ -26,7 +26,7 @@ describe('Use Case: unFreezeSinglePR', () => {
     const mergeFreezeStatusStub = new MergeFreezeStatus(
       MergeFreezeStatusMock.build()
     )
-    const mockMergeFreezeStatusDb: Partial<MergeFreezeStatusDb> = {
+    const mockMergeFreezeStatusDb: Partial<IMergeFreezeStatusDb> = {
       unfreeze: vi.fn(),
     }
 
@@ -39,7 +39,7 @@ describe('Use Case: unFreezeSinglePR', () => {
     const unfreezeSinglePR = makeUnfreezeSinglePR({
       installationDb: mockInstallationDb as IInstallationDb,
       makeGithubDb: mockMakeGithubDb,
-      mergeFreezeStatusDb: mockMergeFreezeStatusDb as MergeFreezeStatusDb,
+      mergeFreezeStatusDb: mockMergeFreezeStatusDb as IMergeFreezeStatusDb,
     })
 
     await unfreezeSinglePR({

@@ -1,25 +1,20 @@
-import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { LandingPage } from './core/pages/LandingPage'
 import { AppLayout } from './core/components/AppLayout'
-import { ManagePage } from './core/pages/ManagePage'
+import { ConfigurationPage } from './core/pages/ConfigurationPage'
 import { AuthProvider } from './core/providers/AuthProvider'
 import { QueryClientProvider } from './core/providers/QueryClientProvider'
 import { ProtectedRoute } from './core/components/ProtectedRoute'
+import { ThemeProvider } from 'styled-components'
+import { theme } from './core/theme/default'
+import { ConfigurationGeneralView } from './modules/configurations/views/ConfigurationGeneralView'
+import { ConfigurationIntegrationsView } from './modules/configurations/views/ConfigurationIntegrationsView'
+import { DashboardPage } from './core/pages/DashboardPage'
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: (
-      <AppLayout>
-        <Outlet />
-      </AppLayout>
-    ),
-    children: [
-      {
-        path: '/',
-        element: <LandingPage />,
-      },
-    ],
+    element: <LandingPage />,
   },
   {
     element: (
@@ -29,10 +24,23 @@ const router = createBrowserRouter([
     ),
     children: [
       {
+        path: '/dashboard',
+        element: <DashboardPage />,
+      },
+      {
         path: '/manage',
-        element: <ManagePage />,
+        element: <ConfigurationPage />,
+        children: [
+          { path: '', element: <Navigate to='/manage/general' replace /> },
+          { path: 'general', element: <ConfigurationGeneralView /> },
+          { path: 'integrations', element: <ConfigurationIntegrationsView /> },
+        ],
       },
     ],
+  },
+  {
+    path: '*',
+    element: <Navigate to='/manage' replace />,
   },
 ])
 
@@ -40,7 +48,9 @@ const App = () => {
   return (
     <QueryClientProvider>
       <AuthProvider>
-        <RouterProvider router={router} />
+        <ThemeProvider theme={theme}>
+          <RouterProvider router={router} />
+        </ThemeProvider>
       </AuthProvider>
     </QueryClientProvider>
   )

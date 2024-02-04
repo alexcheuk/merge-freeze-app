@@ -1,12 +1,12 @@
 import { IInstallationDb } from '../../../installation/interfaces/data/IInstallationDb'
-import { MergeFreezeStatusDb } from '../../../merge-freeze-status/data/merge-freeze-status.db.interface'
+import { IMergeFreezeStatusDb } from '../../../merge-freeze-status/interfaces/data-access/IMergeFreezeStatusDb'
 import { GithubAPI } from '../../data-access/github.api'
 import { IUnfreezeSinglePRUseCase } from '../../interfaces/use-cases/IUnfreezeSinglePRUseCase'
 import { buildUnfrozenGithubCheck } from '../../utils/build-unfrozen-github-check'
 
 interface Dependency {
   installationDb: IInstallationDb
-  mergeFreezeStatusDb: MergeFreezeStatusDb
+  mergeFreezeStatusDb: IMergeFreezeStatusDb
   makeGithubDb: GithubAPI
 }
 
