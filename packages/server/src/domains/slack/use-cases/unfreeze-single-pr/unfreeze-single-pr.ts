@@ -1,8 +1,8 @@
-import { makeGithubApi } from '../../github/data-access/github.api'
-import { IMergeFreezeStatusDb } from '../../merge-freeze-status/interfaces/data-access/IMergeFreezeStatusDb'
-import { UnfreezeSinglePRDTO } from './dtos/unfreeze-single-pr.dto'
-import { buildUnfrozenGithubCheck } from '../../github/utils/build-unfrozen-github-check'
-import { IInstallationDb } from '../../installation/interfaces/data/IInstallationDb'
+import { makeGithubApi } from '../../../github/data-access/github.api'
+import { IMergeFreezeStatusDb } from '../../../merge-freeze-status/interfaces/data-access/IMergeFreezeStatusDb'
+import { buildUnfrozenGithubCheck } from '../../../github/utils/build-unfrozen-github-check'
+import { IInstallationDb } from '../../../installation/interfaces/data/IInstallationDb'
+import { IUnfreezeSinglePrUseCase } from '../../interfaces/use-cases/IUnfreezeSinglePrUseCase'
 
 interface Dependency {
   mergeFreezeStatusDb: IMergeFreezeStatusDb
@@ -14,7 +14,7 @@ export const makeUnfreezeSinglePR = ({
   mergeFreezeStatusDb,
   installationDb,
   makeGithubDb,
-}: Dependency) => {
+}: Dependency): IUnfreezeSinglePrUseCase => {
   return async ({
     slackTeamId,
     requesterId,
@@ -22,7 +22,7 @@ export const makeUnfreezeSinglePR = ({
     reason,
     repo,
     prId,
-  }: UnfreezeSinglePRDTO) => {
+  }) => {
     try {
       const asyncTasks: Promise<any>[] = []
 
@@ -84,7 +84,9 @@ export const makeUnfreezeSinglePR = ({
 
       asyncTasks.push(checksPromise)
 
-      return Promise.all(asyncTasks)
+      await Promise.all(asyncTasks)
+
+      return
     } catch (e) {
       throw e
     }

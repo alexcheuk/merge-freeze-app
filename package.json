@@ -7,7 +7,7 @@
     "dev": "npx nx run-many --target=dev --all",
     "build": "pnpm run -r build",
     "test": "vitest",
-    "tsc": "tsc --noEmit"
+    "tsc": "npx nx run-many --target=tsc --all"
   },
   "keywords": [],
   "author": "",

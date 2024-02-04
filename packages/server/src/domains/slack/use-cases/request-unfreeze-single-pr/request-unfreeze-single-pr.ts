@@ -1,18 +1,15 @@
-import { buildMergeFreezeModal } from '../utils/slack-messages'
-import { RequestMergeFreezeDTO } from './dtos/request-merge-freeze.dto'
-import { IInstallationDb } from '../../installation/interfaces/data/IInstallationDb'
+import { IInstallationDb } from '../../../installation/interfaces/data/IInstallationDb'
+import { IRequestUnfreezeSinglePrUseCase } from '../../interfaces/use-cases/IRequestUnfreezeSinglePrUseCase'
+import { buildUndreezePRModal } from '../../utils/slack-messages/build-unfreeze-pr-modal'
 
 interface Dependencies {
   installationDb: IInstallationDb
 }
 
-export const makeRequestMergeFreeze = ({ installationDb }: Dependencies) => {
-  return async ({
-    slackTeamId,
-    triggerId,
-    channelId,
-    reason = '',
-  }: RequestMergeFreezeDTO) => {
+export const makeRequestUnfreezeSinglePR = ({
+  installationDb,
+}: Dependencies): IRequestUnfreezeSinglePrUseCase => {
+  return async ({ slackTeamId, triggerId, channelId, prId }) => {
     const installation = await installationDb.getInstallationBySlackTeamId(
       slackTeamId
     )
@@ -21,7 +18,7 @@ export const makeRequestMergeFreeze = ({ installationDb }: Dependencies) => {
       throw new Error('Merge freeze not installed on any repositories')
     }
 
-    return buildMergeFreezeModal({
+    return buildUndreezePRModal({
       triggerId,
       channelId,
       repos: installation?.installedRepos.map((repo) => ({
@@ -31,7 +28,7 @@ export const makeRequestMergeFreeze = ({ installationDb }: Dependencies) => {
         },
         value: `${repo.owner}/${repo.repo}`,
       })),
-      reason,
+      prId,
     })
   }
 }

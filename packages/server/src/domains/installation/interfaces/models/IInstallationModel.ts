@@ -1,4 +1,4 @@
-import { FilterQuery, Mongoose, UpdateQuery } from 'mongoose'
+import { FilterQuery, UpdateQuery } from 'mongoose'
 import { Installation } from '../../data/entities/installation.entity'
 import { InstallationModelSchema } from '../../data/models/installation.model'
 

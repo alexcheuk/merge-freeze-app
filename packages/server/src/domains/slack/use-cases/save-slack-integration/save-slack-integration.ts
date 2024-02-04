@@ -1,6 +1,6 @@
-import { IInstallationDb } from '../../installation/interfaces/data/IInstallationDb'
-import { SlackDb } from '../data/slack.db.interface'
-import { SaveSlackIntegrationDTO } from './dtos/save-slack-integration.dto'
+import { IInstallationDb } from '../../../installation/interfaces/data/IInstallationDb'
+import { SlackDb } from '../../data/slack.db.interface'
+import { ISaveSlackIntegrationUseCase } from '../../interfaces/use-cases/ISaveSlackIntegrationUseCase'
 
 interface Dependency {
   installationDb: IInstallationDb
@@ -57,11 +57,8 @@ There are 3 commands available to this channel:
 export const makeSaveSlackIntegration = ({
   installationDb,
   slackAPI,
-}: Dependency) => {
-  return async ({
-    githubUserId,
-    slackInstallation,
-  }: SaveSlackIntegrationDTO) => {
+}: Dependency): ISaveSlackIntegrationUseCase => {
+  return async ({ githubUserId, slackInstallation }) => {
     try {
       await installationDb.upsertSlackIntegration(Number(githubUserId), {
         slackTeamId: slackInstallation.team?.id || '',

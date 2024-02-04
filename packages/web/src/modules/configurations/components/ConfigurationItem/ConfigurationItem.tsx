@@ -1,5 +1,5 @@
 import { Space } from '@/core/components/Space'
-import { Chip, ChipProps, Spacer } from '@nextui-org/react'
+import { Chip, ChipProps } from '@nextui-org/react'
 import { PropsWithChildren } from 'react'
 
 export interface ConfigurationItemProps {

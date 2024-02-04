@@ -24,7 +24,7 @@ export const makeSyncStatusOnCheckRun = ({
 
     const latestStatus = await mergeFreezeStatusDb.getLatestStatus(owner, repo)
 
-    if (!installation || !installation.githubInstallationId)
+    if (!installation || !installation.githubInstallationId || !latestStatus)
       throw new Error('Installation not found')
 
     const gh = makeGithubDb({

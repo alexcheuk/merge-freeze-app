@@ -10,16 +10,14 @@ import { Installation } from '../../../../installation/data/entities/installatio
 
 describe('Use Case: unFreezeSinglePR', () => {
   it('should execute if installation is found', async () => {
-    let installationStub
-
     const mockInstallationDb: Partial<IInstallationDb> = {
       getInstallationByGithubInstallationId: vi.fn(
         async (githubInstallationId) =>
-          (installationStub = new Installation(
+          new Installation(
             InstallationContructorMock.build({
               githubInstallationId,
             })
-          ))
+          )
       ),
     }
 

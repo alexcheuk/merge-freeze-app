@@ -1,14 +1,14 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
-import { ISpaceProps } from "../Space";
-import { flexAlign, flexDirection, flexJustify } from "../types";
+import { ISpaceProps } from '../Space'
+import { flexAlign, flexDirection, flexJustify } from '../types'
 
 interface ISpaceStyledProps {
-  size: ISpaceProps["size"];
-  direction: flexDirection;
-  align: flexAlign;
-  justify: flexJustify;
-  flexWrap: ISpaceProps["flexWrap"];
+  size: ISpaceProps['size']
+  direction: flexDirection
+  align: flexAlign | undefined
+  justify: flexJustify
+  flexWrap: ISpaceProps['flexWrap']
 }
 
 const spaces = {
@@ -17,11 +17,11 @@ const spaces = {
   medium: 16,
   large: 24,
   xlarge: 32,
-};
+}
 
 export const SpaceStyled = styled.div<ISpaceStyledProps>`
   width: 100%;
-  gap: ${(props) => `${spaces[props.size || "small"]}px`};
+  gap: ${(props) => `${spaces[props.size || 'small']}px`};
   display: inline-flex;
   flex-direction: ${(props) => props.direction};
   ${(props) =>
@@ -36,6 +36,6 @@ export const SpaceStyled = styled.div<ISpaceStyledProps>`
   &:empty {
     gap: unset;
   }
-`;
+`
 
-SpaceStyled.displayName = "SpaceStyled";
+SpaceStyled.displayName = 'SpaceStyled'

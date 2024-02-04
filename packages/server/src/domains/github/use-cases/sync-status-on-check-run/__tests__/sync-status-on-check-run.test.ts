@@ -10,16 +10,14 @@ import { MergeFreezeStatusMock } from '../../../../merge-freeze-status/data/enti
 
 describe('Use Case: syncStatusOnCheckRun', () => {
   it('should execute if installation is found', async () => {
-    let installationStub
-
     const mockInstallationDb: Partial<IInstallationDb> = {
       getInstallationByGithubInstallationId: vi.fn(
         async (githubInstallationId) =>
-          (installationStub = new Installation(
+          new Installation(
             InstallationContructorMock.build({
               githubInstallationId,
             })
-          ))
+          )
       ),
     }
 

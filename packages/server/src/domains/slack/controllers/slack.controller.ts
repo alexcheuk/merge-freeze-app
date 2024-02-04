@@ -4,14 +4,7 @@ import {
   SlackCommandMiddlewareArgs,
   SlackViewMiddlewareArgs,
 } from '@slack/bolt'
-import {
-  requestMergeFreeze,
-  freezeRepos,
-  unfreezeRepos,
-  unfreezeSinglePR,
-  requestUnfreezeSinglePR,
-  saveSlackIntegration,
-} from '../use-cases'
+
 import { buildMergeFrozenMessage } from '../utils/slack-messages/build-merge-frozen-message'
 import { MergeFreezeModalSubmissionValuesDTO } from '../use-cases/dtos/merge-freeze-modal-submission.dto'
 import { RequestHandler } from 'express'
@@ -22,6 +15,12 @@ import { buildUnfreezeSinglePRMessage } from '../utils/slack-messages/build-unfr
 import { IncomingMessage, ServerResponse } from 'http'
 import passport from 'passport'
 import { UserJWTPayload } from '../../auth/interfaces/dtos/user-jwt-payload'
+import { freezeRepos } from '../use-cases/freeze-repos'
+import { requestMergeFreeze } from '../use-cases/request-merge-freeze'
+import { requestUnfreezeSinglePR } from '../use-cases/request-unfreeze-single-pr'
+import { saveSlackIntegration } from '../use-cases/save-slack-integration'
+import { unfreezeRepos } from '../use-cases/unfreeze-repos'
+import { unfreezeSinglePR } from '../use-cases/unfreeze-single-pr'
 
 const mergeFreeze: Middleware<SlackCommandMiddlewareArgs> = async ({
   ack,

@@ -1,8 +1,8 @@
-import { makeGithubApi } from '../../github/data-access/github.api'
-import { IMergeFreezeStatusDb } from '../../merge-freeze-status/interfaces/data-access/IMergeFreezeStatusDb'
-import { FreezeRepoDTO, FreezeRepoOptions } from './dtos/freeze-repo.dto'
-import { buildFrozenGithubCheck } from '../../github/utils/build-frozen-github-check'
-import { IInstallationDb } from '../../installation/interfaces/data/IInstallationDb'
+import { makeGithubApi } from '../../../github/data-access/github.api'
+import { buildFrozenGithubCheck } from '../../../github/utils/build-frozen-github-check'
+import { IInstallationDb } from '../../../installation/interfaces/data/IInstallationDb'
+import { IMergeFreezeStatusDb } from '../../../merge-freeze-status/interfaces/data-access/IMergeFreezeStatusDb'
+import { IFreezeRepoUseCase } from '../../interfaces/use-cases/IFreezeRepoUseCase'
 
 interface Dependency {
   mergeFreezeStatusDb: IMergeFreezeStatusDb
@@ -14,11 +14,15 @@ export const makeFreezeRepo = ({
   mergeFreezeStatusDb,
   installationDb,
   makeGithubDb,
-}: Dependency) => {
-  return async (
-    { slackTeamId, requesterId, requesterName, reason, repo }: FreezeRepoDTO,
-    { installationId }: FreezeRepoOptions = {}
-  ) => {
+}: Dependency): IFreezeRepoUseCase => {
+  return async ({
+    slackTeamId,
+    requesterId,
+    requesterName,
+    reason,
+    repo,
+    installationId,
+  }) => {
     const asyncTasks: Promise<any>[] = []
 
     const githubInstallationId = installationId
@@ -83,6 +87,8 @@ export const makeFreezeRepo = ({
       })
     }
 
-    return Promise.all(asyncTasks)
+    await Promise.all(asyncTasks)
+
+    return
   }
 }
