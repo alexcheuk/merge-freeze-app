@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  reverseproxy:
+    build:
+      context: .
+      dockerfile: docker/reverse-proxy/Dockerfile
+    ports:
+        - 80:80
+    restart: always
+  web:
+    depends_on:
+      - reverseproxy
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: web-app
+  server:
+    depends_on:
+      - reverseproxy
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: server-app
+    env_file:
+      - packages/server/.env
