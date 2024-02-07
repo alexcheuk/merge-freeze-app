@@ -1,4 +1,4 @@
-import { getInstallation } from '@/modules/installation/domain/use-cases'
+import { getInstallation } from '@/modules/installation/use-cases'
 import { useQuery } from '@tanstack/react-query'
 
 export const useConfigurationGeneralViewController = () => {

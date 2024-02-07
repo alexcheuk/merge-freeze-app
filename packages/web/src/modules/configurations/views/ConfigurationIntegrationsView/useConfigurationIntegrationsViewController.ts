@@ -1,7 +1,7 @@
 import {
   deleteInstallation,
   getInstallation,
-} from '@/modules/installation/domain/use-cases'
+} from '@/modules/installation/use-cases'
 import { useMutation, useQuery } from '@tanstack/react-query'
 
 export const useConfigurationIntegrationsViewController = () => {
