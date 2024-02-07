@@ -1,3 +1,5 @@
+import { IInstallationEntity } from '../interfaces/entities/installation.entity'
+
 interface InstallationConstructor {
   githubUserId: number | null
   githubInstallationId: number | null
@@ -5,7 +7,7 @@ interface InstallationConstructor {
   slackConfigurationUrl: string | null
 }
 
-export class Installation {
+export class Installation implements IInstallationEntity {
   githubUserId: number | null
   githubInstallationId: number | null
   githubConfigurationUrl: string | null
