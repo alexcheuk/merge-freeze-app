@@ -1,4 +1,4 @@
-import { theme } from '@/core/theme/default'
+import { theme } from '@/infrastructure/theme/default'
 import 'styled-components'
 
 type Theme = typeof theme
