@@ -18,7 +18,7 @@ export const makeGithubApi = ({
     authStrategy: createAppAuth,
     auth: {
       appId: process.env.GITHUB_APP_IDENTIFIER || '',
-      privateKey: process.env.GITHUB_PRIVATE_KEY || '',
+      privateKey: process.env.PRIVATE_KEY || '',
       installationId: installationId,
       clientId: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,

@@ -1,7 +1,7 @@
 import crypto from 'crypto'
 import { NextFunction, Request, Response } from 'express'
 
-const WEBHOOK_SECRET = process.env.GITHUB_WEBHOOK_SECRET || ''
+const WEBHOOK_SECRET = process.env.GITHUB_SIGNING_SECRET || ''
 
 const verifySignature = (req: Request) => {
   const signature = crypto

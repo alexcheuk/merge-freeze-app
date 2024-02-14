@@ -43,7 +43,7 @@ export const ConfigurationIntegrationsView = () => {
           ) : (
             <Button
               as={Link}
-              href={`https://github.com/apps/slash-merge-freeze-dev/installations/new`}
+              href={`https://github.com/apps/${process.env.GITHUB_APP_NAME}/installations/new`}
               color={'primary'}
               variant='bordered'
             >
