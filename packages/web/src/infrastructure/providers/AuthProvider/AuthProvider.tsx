@@ -1,11 +1,12 @@
 import { PropsWithChildren, createContext } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { ProfileDTO, ProfileModel } from '@/domains/user/models/ProfileModel'
+import { getProfile } from '../../../domains/user/use-cases/get-profile'
+import { Profile } from '../../../domains/user/entities/profile.entity'
 
 export interface AuthContext {
   isLoggedIn: boolean
   isLoading: boolean
-  user: ProfileDTO | null
+  user: Profile | null
 }
 
 const DEFAULT_STATE = {
@@ -24,7 +25,7 @@ export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
   } = useQuery({
     queryKey: ['get-profile'],
     queryFn: () => {
-      return ProfileModel.getProfile().then((res) => res?.data)
+      return getProfile()
     },
   })
 

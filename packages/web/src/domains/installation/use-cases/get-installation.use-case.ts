@@ -1,5 +1,5 @@
 import { Installation } from '../entities/installation.entity'
-import { IInstallationApi } from '../interfaces/api/IInstallationApi'
+import { IInstallationApi } from '../../../data/installation/interfaces/api/IInstallationApi'
 import { IGetInstallation } from '../interfaces/use-cases/IGetInstallation'
 
 interface Dependency {
