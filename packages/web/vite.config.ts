@@ -21,6 +21,7 @@ export default defineConfig({
       '/api': 'http://127.0.0.1:3000',
       '/slack': 'http://127.0.0.1:3000',
       '/github': 'http://127.0.0.1:3000',
+      '/status': 'http://127.0.0.1:3000',
     },
   },
 })
