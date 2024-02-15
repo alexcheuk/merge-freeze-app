@@ -41,21 +41,15 @@ jobs:
   create_tag:
     docker:
       - image: cimg/python:3.10.2
-    working_directory: *workspace
     steps:
-      - attach_workspace:
-          at: *workspace
       - checkout
-      - version-tag/create:
-          workspace: *workspace
+      - version-tag/create
 
   build_and_push_web:
     docker:
       - image: cimg/python:3.10.2
-    working_directory: *workspace
     steps:
-      - attach_workspace:
-          at: *workspace
+      - checkout
       - version-tag/get
       - aws-cli/install
       - aws-cli/setup
@@ -77,10 +71,8 @@ jobs:
   build_and_push_server:
     docker:
       - image: cimg/python:3.10.2
-    working_directory: *workspace
     steps:
-      - attach_workspace:
-          at: *workspace
+      - checkout
       - version-tag/get
       - aws-cli/install
       - aws-cli/setup
