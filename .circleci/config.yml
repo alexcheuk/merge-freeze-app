@@ -37,10 +37,6 @@ aliases:
       sudo mv ./aws-iam-authenticator /usr/local/bin/
       sudo chmod +x /usr/local/bin/aws-iam-authenticator
 
-  - &run_yarn
-    name: Install Packages
-    command: yarn --frozen-lockfile
-
 jobs:
   build_and_push_web:
     docker:
@@ -62,7 +58,7 @@ jobs:
           account-url: AWS_PRODUCTION_ACCOUNT_URL
           repo: merge-freeze
           tag: web-$VERSION_TAG,web-latest
-          dockerfile: ./docker
+          dockerfile: ./docker/Dockerfile
           extra-build-args: '--target web-app'
       - aws-ecr/push-image:
           account-url: AWS_PRODUCTION_ACCOUNT_URL
@@ -89,7 +85,7 @@ jobs:
           account-url: AWS_PRODUCTION_ACCOUNT_URL
           repo: merge-freeze
           tag: server-$VERSION_TAG,server-latest
-          dockerfile: ./docker
+          dockerfile: ./docker/Dockerfile
           extra-build-args: '--target server-app'
       - aws-ecr/push-image:
           account-url: AWS_PRODUCTION_ACCOUNT_URL
