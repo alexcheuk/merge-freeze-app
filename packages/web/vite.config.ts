@@ -20,6 +20,7 @@ export default defineConfig({
       '/auth': 'http://127.0.0.1:3000',
       '/api': 'http://127.0.0.1:3000',
       '/slack': 'http://127.0.0.1:3000',
+      '/github': 'http://127.0.0.1:3000',
     },
   },
 })

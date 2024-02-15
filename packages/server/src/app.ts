@@ -2,6 +2,7 @@ import './infrastructure/configs/env'
 import express from 'express'
 import morgan from 'morgan'
 import cookieParser from 'cookie-parser'
+import statusMonitor from 'express-status-monitor'
 
 import slackRouter from './domains/slack/routes'
 import githubRouter from './domains/github/routes'
@@ -20,6 +21,7 @@ const app = express()
 initializeMongoose()
 
 app.use(morgan('common'))
+app.use(statusMonitor())
 
 app.use(slackRouter)
 

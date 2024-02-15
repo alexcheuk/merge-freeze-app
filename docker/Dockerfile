@@ -16,7 +16,6 @@ FROM base AS server-app
 COPY --from=build /prod/server /prod/server
 WORKDIR /prod/server
 EXPOSE 3000
-CMD [ "node", "dist/app" ]
 
 FROM nginx:stable-alpine AS web-app
 COPY --from=build /prod/web/dist /usr/src/app

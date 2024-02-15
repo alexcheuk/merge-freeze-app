@@ -2,6 +2,7 @@ import { checkRunRerequestedController } from './check-run-rerequested'
 import { checkSuiteRequestedController } from './check-suite-requested'
 import { checkSuiteRerequestedController } from './check-suite-rerequested'
 import { makeEventsController } from './events.controller'
+import { installApp } from './install-app.controller'
 import { installationAddedController } from './installation-added'
 import { installationCreatedController } from './installation-created'
 import { installationDeletedController } from './installation-deleted'
@@ -20,3 +21,5 @@ export const eventsController = makeEventsController({
   installationAddedController,
   installationRemovedController,
 })
+
+export const installAppController = installApp
