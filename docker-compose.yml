@@ -24,3 +24,4 @@ services:
       target: server-app
     env_file:
       - packages/server/.env
+    command: node dist/app

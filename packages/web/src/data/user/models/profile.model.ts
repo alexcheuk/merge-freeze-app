@@ -4,7 +4,7 @@ import { IProfileModel } from '../interfaces/models/IProfileModel'
 
 export const ProfileModel: IProfileModel = {
   get: async () => {
-    return ApiClient.get<ApiResponse<ProfileDTO>>('/api/installation').then(
+    return ApiClient.get<ApiResponse<ProfileDTO>>('/api/profile').then(
       (res) => res.data
     )
   },
