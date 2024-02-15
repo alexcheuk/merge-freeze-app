@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: merge-freeze-test
+  name: merge-freeze-server
 spec:
   replicas: 1
   selector:
     matchLabels:
-      component: merge-freeze-test
+      component: merge-freeze-server
   template:
     metadata:
       labels:
-        component: merge-freeze-test
+        component: merge-freeze-server
     spec:
       containers:
         - name: merge-freeze-server
@@ -56,12 +56,12 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    component: merge-freeze-test
-  name: merge-freeze-test
+    component: merge-freeze-server
+  name: merge-freeze-server
 spec:
   type: ClusterIP
   ports:
     - port: 3200
       targetPort: 3200
   selector:
-    component: merge-freeze-test
+    component: merge-freeze-server
