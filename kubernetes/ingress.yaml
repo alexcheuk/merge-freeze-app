@@ -5,13 +5,48 @@ metadata:
 spec:
   ingressClassName: 'kong'
   rules:
-    - host: 'mergefreeze.procurify.com'
+    - host: 'mergefreeze-test.procurify.com'
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: merge-freeze
+                name: merge-freeze-web
                 port:
                   number: 3100
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: merge-freeze-server
+                port:
+                  number: 3200
+          - path: /auth
+            pathType: Prefix
+            backend:
+              service:
+                name: merge-freeze-server
+                port:
+                  number: 3200
+          - path: /slack
+            pathType: Prefix
+            backend:
+              service:
+                name: merge-freeze-server
+                port:
+                  number: 3200
+          - path: /github
+            pathType: Prefix
+            backend:
+              service:
+                name: merge-freeze-server
+                port:
+                  number: 3200
+          - path: /status
+            pathType: Prefix
+            backend:
+              service:
+                name: merge-freeze-server
+                port:
+                  number: 3200

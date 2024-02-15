@@ -61,8 +61,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    - name: 'status'
-      port: 3200
+    - port: 3200
       targetPort: 3200
   selector:
     component: merge-freeze-test
