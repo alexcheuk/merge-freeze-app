@@ -2,7 +2,6 @@ import './infrastructure/configs/env'
 import express from 'express'
 import morgan from 'morgan'
 import cookieParser from 'cookie-parser'
-import statusMonitor from 'express-status-monitor'
 
 import slackRouter from './domains/slack/routes'
 import githubRouter from './domains/github/routes'
@@ -21,7 +20,6 @@ const app = express()
 initializeMongoose()
 
 app.use(morgan('common'))
-app.use(statusMonitor())
 
 app.use(slackRouter)
 
@@ -34,6 +32,10 @@ app.use(authRouter)
 app.use(userRouter)
 app.use(installationRouter)
 app.use(mergeFreezeStatusRouter)
+
+app.use('/health', (req, res) => {
+  res.status(200).send('Ok')
+})
 
 app.use('*', (req, res) => {
   res.status(404).send('404')
