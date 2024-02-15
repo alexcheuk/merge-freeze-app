@@ -38,6 +38,16 @@ aliases:
       sudo chmod +x /usr/local/bin/aws-iam-authenticator
 
 jobs:
+  create_tag:
+    docker:
+      - image: cimg/python:3.10.2
+    working_directory: *workspace
+    steps:
+      - attach_workspace:
+          at: *workspace
+      - version-tag/create:
+          workspace: *workspace
+
   build_and_push_web:
     docker:
       - image: cimg/python:3.10.2
@@ -46,8 +56,7 @@ jobs:
       - attach_workspace:
           at: *workspace
       - checkout
-      - version-tag/create:
-          workspace: *workspace
+      - version-tag/get
       - aws-cli/install
       - aws-cli/setup
       - setup_remote_docker
@@ -73,8 +82,7 @@ jobs:
       - attach_workspace:
           at: *workspace
       - checkout
-      - version-tag/create:
-          workspace: *workspace
+      - version-tag/get
       - aws-cli/install
       - aws-cli/setup
       - setup_remote_docker
@@ -149,7 +157,8 @@ jobs:
           name: kubernetes update image and resources
           command: |
             cd kubernetes
-            sed -i "s/fake-img-tag/<< parameters.service-name >>-${VERSION_TAG}/g" merge-freeze-<< parameters.service-name >>.yaml
+            sed -i "s/fake-img-tag/server-${VERSION_TAG}/g" merge-freeze-server.yaml
+            sed -i "s/fake-img-tag/web-${VERSION_TAG}/g" merge-freeze-web.yaml
             kubectl apply -f . -n << parameters.namespace >>
 
 ################################
@@ -161,6 +170,12 @@ workflows:
 
   build_and_deploy:
     jobs:
+      - create_tag:
+          filters:
+            branches:
+              only:
+                - /^master$/
+                - /^k8s-migration$/
       - build_and_push_web:
           context: production
           filters:
@@ -168,16 +183,8 @@ workflows:
               only:
                 - /^master$/
                 - /^k8s-migration$/
-      - kubernetes_deployment:
-          context: production
-          name: production_deployment
-          namespace: 'merge-freeze-test'
-          service-name: 'web'
-          cluster-name: 'production'
-          cluster-authentication-role-arn: 'arn:aws:iam::146043269776:role/kubernetes-admin-production'
-          region: '${AWS_DEFAULT_REGION}'
           requires:
-            - build_and_push_web
+            - create_tag
       - build_and_push_server:
           context: production
           filters:
@@ -185,13 +192,15 @@ workflows:
               only:
                 - /^master$/
                 - /^k8s-migration$/
+          requires:
+            - create_tag
       - kubernetes_deployment:
           context: production
           name: production_deployment
           namespace: 'merge-freeze-test'
-          service-name: 'server'
           cluster-name: 'production'
           cluster-authentication-role-arn: 'arn:aws:iam::146043269776:role/kubernetes-admin-production'
           region: '${AWS_DEFAULT_REGION}'
           requires:
             - build_and_push_server
+            - build_and_push_web
