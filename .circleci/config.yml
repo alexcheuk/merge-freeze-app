@@ -149,8 +149,7 @@ jobs:
           name: kubernetes update image and resources
           command: |
             cd kubernetes
-            sed -i "s/fake-img-tag/server-${VERSION_TAG}/g" merge-freeze-server.yaml
-            sed -i "s/fake-img-tag/web-${VERSION_TAG}/g" merge-freeze-web.yaml
+            sed -i "s/fake-img-tag/<< parameters.service-name >>-${VERSION_TAG}/g" merge-freeze-<< parameters.service-name >>.yaml
             kubectl apply -f . -n << parameters.namespace >>
 
 ################################
@@ -169,6 +168,16 @@ workflows:
               only:
                 - /^master$/
                 - /^k8s-migration$/
+      - kubernetes_deployment:
+          context: production
+          name: production_deployment
+          namespace: 'merge-freeze-test'
+          service-name: 'web'
+          cluster-name: 'production'
+          cluster-authentication-role-arn: 'arn:aws:iam::146043269776:role/kubernetes-admin-production'
+          region: '${AWS_DEFAULT_REGION}'
+          requires:
+            - build_and_push_web
       - build_and_push_server:
           context: production
           filters:
@@ -180,9 +189,9 @@ workflows:
           context: production
           name: production_deployment
           namespace: 'merge-freeze-test'
+          service-name: 'server'
           cluster-name: 'production'
           cluster-authentication-role-arn: 'arn:aws:iam::146043269776:role/kubernetes-admin-production'
           region: '${AWS_DEFAULT_REGION}'
           requires:
-            - build_and_push_web
             - build_and_push_server
