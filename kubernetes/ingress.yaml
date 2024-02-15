@@ -43,7 +43,7 @@ spec:
                 name: merge-freeze-server
                 port:
                   number: 3200
-          - path: /status
+          - path: /health
             pathType: Prefix
             backend:
               service:
