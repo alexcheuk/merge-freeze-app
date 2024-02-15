@@ -43,6 +43,9 @@ jobs:
       - image: cimg/python:3.10.2
     working_directory: *workspace
     steps:
+      - attach_workspace:
+          at: *workspace
+      - checkout
       - version-tag/create:
           workspace: *workspace
 
