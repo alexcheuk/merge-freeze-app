@@ -16,7 +16,7 @@ spec:
         - name: merge-freeze-web
           image: 146043269776.dkr.ecr.us-west-2.amazonaws.com/merge-freeze:fake-img-tag
           ports:
-            - containerPort: 3100
+            - containerPort: 80
           resources:
             requests:
               memory: 75Mi
@@ -35,6 +35,6 @@ spec:
   type: ClusterIP
   ports:
     - port: 3100
-      targetPort: 3100
+      targetPort: 80
   selector:
     component: merge-freeze-web
