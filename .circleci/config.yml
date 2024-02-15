@@ -1,0 +1,192 @@
+version: 2.1
+orbs:
+  aws-ecr: circleci/aws-ecr@6.5.0
+  aws-eks: circleci/aws-eks@0.2.3
+  aws-cli: circleci/aws-cli@0.1.18
+  version-tag: commitdev/version-tag@0.0.3
+  kubernetes: circleci/kubernetes@0.11.0
+
+variables:
+  - &workspace /home/circleci/project
+
+restore_yarn_cache: &restore_yarn_cache
+  restore_cache:
+    keys:
+      - monorepo-v2-dependency-cache-{{ checksum "yarn.lock" }}
+      - monorepo-v2-dependency-cache-
+
+aliases:
+  - &assume-role
+    name: Assume role
+    command: |
+      RESULT=$(aws sts assume-role --role-arn << parameters.cluster-authentication-role-arn >> --role-session-name deploy)
+      aws configure set aws_access_key_id "$(echo $RESULT | jq -r .Credentials.AccessKeyId)" --profile assumed-role
+      aws configure set aws_secret_access_key "$(echo $RESULT | jq -r .Credentials.SecretAccessKey)" --profile assumed-role
+      aws configure set aws_session_token "$(echo $RESULT | jq -r .Credentials.SessionToken)" --profile assumed-role
+
+  - &install-binaries
+    name: Install Binaries
+    command: |
+      KUSTOMIZE_VERSION=3.5.4
+      IAM_AUTH_VERSION=0.5.0
+      curl -L -o ./kustomize.tar.gz "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz"
+      sudo tar xvzf ./kustomize.tar.gz -C /usr/local/bin/
+      sudo chmod +x /usr/local/bin/kustomize
+      kustomize version
+      curl -L -o ./aws-iam-authenticator "https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/download/v${IAM_AUTH_VERSION}/aws-iam-authenticator_${IAM_AUTH_VERSION}_linux_amd64"
+      sudo mv ./aws-iam-authenticator /usr/local/bin/
+      sudo chmod +x /usr/local/bin/aws-iam-authenticator
+
+  - &run_yarn
+    name: Install Packages
+    command: yarn --frozen-lockfile
+
+jobs:
+  build_and_push_web:
+    docker:
+      - image: cimg/python:3.10.2
+    working_directory: *workspace
+    steps:
+      - attach_workspace:
+          at: *workspace
+      - checkout
+      - version-tag/create:
+          workspace: *workspace
+      - aws-cli/install
+      - aws-cli/setup
+      - setup_remote_docker
+      - aws-ecr/ecr-login-for-secondary-account:
+          account-id: AWS_ECR_REPO_ACCOUNT_ID
+          region: AWS_DEFAULT_REGION
+      - aws-ecr/build-image:
+          account-url: AWS_PRODUCTION_ACCOUNT_URL
+          repo: merge-freeze
+          tag: web-$VERSION_TAG,web-latest
+          dockerfile: ./docker
+          extra-build-args: '--target web-app'
+      - aws-ecr/push-image:
+          account-url: AWS_PRODUCTION_ACCOUNT_URL
+          repo: merge-freeze
+          tag: web-$VERSION_TAG,web-latest
+
+  build_and_push_server:
+    docker:
+      - image: cimg/python:3.10.2
+    working_directory: *workspace
+    steps:
+      - attach_workspace:
+          at: *workspace
+      - checkout
+      - version-tag/create:
+          workspace: *workspace
+      - aws-cli/install
+      - aws-cli/setup
+      - setup_remote_docker
+      - aws-ecr/ecr-login-for-secondary-account:
+          account-id: AWS_ECR_REPO_ACCOUNT_ID
+          region: AWS_DEFAULT_REGION
+      - aws-ecr/build-image:
+          account-url: AWS_PRODUCTION_ACCOUNT_URL
+          repo: merge-freeze
+          tag: server-$VERSION_TAG,server-latest
+          dockerfile: ./docker
+          extra-build-args: '--target server-app'
+      - aws-ecr/push-image:
+          account-url: AWS_PRODUCTION_ACCOUNT_URL
+          repo: merge-freeze
+          tag: server-$VERSION_TAG,server-latest
+
+  kubernetes_deployment:
+    executor: aws-eks/python3
+    parameters:
+      namespace:
+        type: string
+        default: ''
+        description: |
+          The kubernetes namespace that should be used.
+      tag:
+        type: string
+        default: $VERSION_TAG
+        description: |
+          The tag that should be deployed.
+      region:
+        type: string
+        default: ''
+        description: |
+          The region to use for AWS operations.
+      service-name:
+        type: string
+        default: ''
+        description: |
+          Name of the service to be deployed.
+      cluster-name:
+        description: |
+          The name of the EKS cluster.
+        type: string
+      cluster-authentication-role-arn:
+        default: ''
+        description: |
+          To assume a role for cluster authentication, specify an IAM role ARN with
+          this option. For example, if you created a cluster while assuming an IAM
+          role, then you must also assume that role to connect to the cluster the
+          first time.
+        type: string
+    steps:
+      - checkout
+      - version-tag/get
+      - aws-cli/install
+      - aws-cli/setup
+      - run: *assume-role
+      - kubernetes/install-kubectl
+      - aws-eks/update-kubeconfig-with-authenticator:
+          authenticator-release-tag: v0.5.1
+          cluster-name: << parameters.cluster-name >>
+          cluster-authentication-role-arn: << parameters.cluster-authentication-role-arn >>
+          aws-region: << parameters.region >>
+          install-kubectl: false
+          aws-profile: assumed-role
+      - run:
+          name: Create namespace for merge-freeze
+          command: |
+            kubectl create namespace merge-freeze-test || echo "Namespace already exists"
+      - run:
+          name: kubernetes update image and resources
+          command: |
+            cd kubernetes
+            sed -i "s/fake-img-tag/server-${VERSION_TAG}/g" merge-freeze-server.yaml
+            sed -i "s/fake-img-tag/web-${VERSION_TAG}/g" merge-freeze-web.yaml
+            kubectl apply -f . -n << parameters.namespace >>
+
+################################
+## Main Workflow
+################################
+
+workflows:
+  version: 2
+
+  build_and_deploy:
+    jobs:
+      - build_and_push_web:
+          context: production
+          filters:
+            branches:
+              only:
+                - /^master$/
+                - /^k8s-migration$/
+      - build_and_push_server:
+          context: production
+          filters:
+            branches:
+              only:
+                - /^master$/
+                - /^k8s-migration$/
+      - kubernetes_deployment:
+          context: production
+          name: production_deployment
+          namespace: 'merge-freeze-test'
+          cluster-name: 'production'
+          cluster-authentication-role-arn: 'arn:aws:iam::146043269776:role/kubernetes-admin-production'
+          region: '${AWS_DEFAULT_REGION}'
+          requires:
+            - build_and_push_web
+            - build_and_push_server
