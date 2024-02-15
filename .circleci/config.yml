@@ -56,7 +56,6 @@ jobs:
     steps:
       - attach_workspace:
           at: *workspace
-      - checkout
       - version-tag/get
       - aws-cli/install
       - aws-cli/setup
@@ -82,7 +81,6 @@ jobs:
     steps:
       - attach_workspace:
           at: *workspace
-      - checkout
       - version-tag/get
       - aws-cli/install
       - aws-cli/setup
