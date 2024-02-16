@@ -41,7 +41,7 @@ const receiver = new ExpressReceiver({
       return installation?.slackInstallation as SlackInstallation
     },
   },
-  redirectUri: 'http://mergefreeze.local/auth/slack/callback',
+  redirectUri: 'https://mergefreeze-test.procurify.com/auth/slack/callback',
   installerOptions: {
     stateVerification: false,
     redirectUriPath: '/auth/slack/callback',
