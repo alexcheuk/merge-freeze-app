@@ -4,8 +4,8 @@ export const initialize = async () => {
   try {
     if (import.meta.env.PROD) {
       await mongoose.connect(process.env.MONGO_DB_URL || '', {
-        tls: true,
-        tlsCAFile: '/etc/certs/global-bundle.pem',
+        // tls: true,
+        // tlsCAFile: '/etc/certs/global-bundle.pem',
       })
     } else {
       await mongoose.connect(process.env.MONGO_DB_URL || '')
