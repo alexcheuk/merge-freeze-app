@@ -2,6 +2,9 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: merge-freeze-test
+  annotations:
+    external-dns.alpha.kubernetes.io/alias: "true"
+    external-dns.alpha.kubernetes.io/target: d78xw4ac0mena.cloudfront.net
 spec:
   ingressClassName: 'kong'
   rules:
