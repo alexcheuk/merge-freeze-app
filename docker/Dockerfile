@@ -15,6 +15,8 @@ RUN pnpm deploy --filter=web --prod /prod/web
 FROM base AS server-app
 COPY --from=build /prod/server /prod/server
 WORKDIR /prod/server
+RUN mkdir /etc/certs
+RUN wget -O /etc/certs/global-bundle.pem https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem
 EXPOSE 3000
 
 FROM nginx:stable-alpine AS web-app

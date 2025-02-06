@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: merge-freeze-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: merge-freeze-server
+  template:
+    metadata:
+      labels:
+        component: merge-freeze-server
+    spec:
+      containers:
+        - name: merge-freeze-server
+          image: 146043269776.dkr.ecr.us-west-2.amazonaws.com/merge-freeze:fake-img-tag
+          args:
+            - node
+            - dist/app
+          ports:
+            - containerPort: 3200
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3200
+            initialDelaySeconds: 35
+            periodSeconds: 300
+            failureThreshold: 4
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3200
+            initialDelaySeconds: 35
+            periodSeconds: 300
+            failureThreshold: 2
+          resources:
+            requests:
+              memory: 75Mi
+              cpu: '0.01'
+            limits:
+              memory: 150Mi
+              cpu: '0.05'
+          env:
+            - name: PORT
+              value: '3200'
+            - name: NODE_ENV
+              value: production
+          envFrom:
+            - secretRef:
+                name: ssm-parameters
+      serviceAccountName: external-secret-auth
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    component: merge-freeze-server
+  name: merge-freeze-server
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3200
+      targetPort: 3200
+  selector:
+    component: merge-freeze-server

@@ -1,0 +1,55 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: merge-freeze-test
+  annotations:
+    external-dns.alpha.kubernetes.io/alias: "true"
+    external-dns.alpha.kubernetes.io/target: d78xw4ac0mena.cloudfront.net
+spec:
+  ingressClassName: 'kong'
+  rules:
+    - host: 'mergefreeze-test.procurify.com'
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: merge-freeze-web
+                port:
+                  number: 3100
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: merge-freeze-server
+                port:
+                  number: 3200
+          - path: /auth
+            pathType: Prefix
+            backend:
+              service:
+                name: merge-freeze-server
+                port:
+                  number: 3200
+          - path: /slack
+            pathType: Prefix
+            backend:
+              service:
+                name: merge-freeze-server
+                port:
+                  number: 3200
+          - path: /github
+            pathType: Prefix
+            backend:
+              service:
+                name: merge-freeze-server
+                port:
+                  number: 3200
+          - path: /health
+            pathType: Prefix
+            backend:
+              service:
+                name: merge-freeze-server
+                port:
+                  number: 3200
